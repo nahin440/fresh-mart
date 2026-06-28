@@ -4,26 +4,28 @@ import Link from 'next/link';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
 export default function NewArrivalsSection({ products = [] }) {
-  const newOnes = products.filter(p => p.isNewArrival).slice(0, 4);
-  if (!newOnes.length) return null;
+  const list = products.filter(p => p.isNewArrival).slice(0, 4);
+  if (!list.length) return null;
 
   return (
     <section className="section" style={{ background: 'var(--canvas)' }}>
-      <div className="page-container">
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
+      <div className="container">
+        {/* Decorative heading */}
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 'clamp(1.5rem,4vw,2.25rem)', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-              <Sparkles size={14} style={{ color: 'var(--violet)' }} />
-              <p style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--violet)' }}>Just Landed</p>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <Sparkles size={15} style={{ color: 'var(--violet)' }} />
+              <span className="eyebrow" style={{ marginBottom: 0 }}>Just Landed</span>
             </div>
-            <h2 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.03em' }}>New Arrivals</h2>
+            <h2 className="t-h2">New Arrivals</h2>
           </div>
-          <Link href="/products?newArrival=true" className="btn-ghost" style={{ color: 'var(--slate)', display: 'inline-flex', gap: 4, fontSize: 13 }}>
-            See All <ArrowRight size={14} />
+          <Link href="/products?newArrival=true" className="btn btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--slate)' }}>
+            See All <ArrowRight size={15} />
           </Link>
         </div>
+
         <div className="product-grid">
-          {newOnes.map((p, i) => <ProductCard key={p.id || p._id} product={p} index={i} />)}
+          {list.map((p, i) => <ProductCard key={p.id || p._id} product={p} index={i} />)}
         </div>
       </div>
     </section>

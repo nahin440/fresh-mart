@@ -4,231 +4,198 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
-import { ShoppingBag, Heart, Search, Menu, X, Leaf, ArrowRight, ChevronDown } from 'lucide-react';
+import { ShoppingBag, Heart, Search, Menu, X, Leaf, ArrowRight } from 'lucide-react';
 
 const NAV = [
   { label: 'Fresh Produce', href: '/products?category=Fruits+%26+Vegetables' },
-  { label: 'Dairy & Eggs', href: '/products?category=Dairy+%26+Eggs' },
-  { label: 'Bakery', href: '/products?category=Bakery+%26+Bread' },
-  { label: 'Pantry', href: '/products?category=Pantry+%26+Dry+Goods' },
-  { label: 'Beverages', href: '/products?category=Beverages' },
-  { label: 'Snacks', href: '/products?category=Snacks+%26+Confectionery' },
-  { label: 'Meat & Fish', href: '/products?category=Meat+%26+Seafood' },
+  { label: 'Dairy & Eggs',  href: '/products?category=Dairy+%26+Eggs' },
+  { label: 'Bakery',        href: '/products?category=Bakery+%26+Bread' },
+  { label: 'Pantry',        href: '/products?category=Pantry+%26+Dry+Goods' },
+  { label: 'Beverages',     href: '/products?category=Beverages' },
+  { label: 'Snacks',        href: '/products?category=Snacks+%26+Confectionery' },
+  { label: 'Meat & Fish',   href: '/products?category=Meat+%26+Seafood' },
 ];
 
 export default function Header() {
   const { count, setIsOpen } = useCart();
   const { count: wCount } = useWishlist();
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [q, setQ]                   = useState('');
   const router = useRouter();
-  const searchRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const fn = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', fn, { passive: true });
+    return () => window.removeEventListener('scroll', fn);
   }, []);
 
-  // Lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [mobileOpen]);
 
-  // Focus search input when opened
   useEffect(() => {
-    if (searchOpen && searchRef.current) {
-      setTimeout(() => searchRef.current?.focus(), 100);
-    }
+    if (searchOpen) setTimeout(() => inputRef.current?.focus(), 80);
   }, [searchOpen]);
 
-  const handleSearch = (e) => {
+  const search = (e) => {
     e.preventDefault();
-    if (!query.trim()) return;
-    router.push(`/products?search=${encodeURIComponent(query.trim())}`);
-    setSearchOpen(false);
-    setQuery('');
-    setMobileOpen(false);
+    if (!q.trim()) return;
+    router.push(`/products?search=${encodeURIComponent(q.trim())}`);
+    setQ(''); setSearchOpen(false); setMobileOpen(false);
   };
 
-  const closeAll = () => { setMobileOpen(false); setSearchOpen(false); };
+  const close = () => { setMobileOpen(false); setSearchOpen(false); };
 
   return (
     <>
-      {/* Promo ticker */}
-      <div style={{ background: 'var(--near-black)', color: '#fff', height: 36 }} className="flex items-center overflow-hidden">
-        <div className="ticker-wrap w-full">
-          <div className="ticker-inner anim-ticker text-11" style={{ color: 'var(--concrete)' }}>
-            {Array(3).fill([
-              '🌿 Certified Organic Produce',
-              '🚚 Free Delivery on Orders £50+',
-              '⚡ Same-Day Delivery Before 2pm',
-              '🌍 100% Plastic-Free Packaging',
-              '⭐ Over 50,000 Happy Customers',
-              '🔄 Free Returns Within 24 Hours',
-            ]).flat().map((t, i) => (
-              <span key={i} className="inline-block mx-8">{t}</span>
+      {/* Announcement bar */}
+      <div style={{ background: 'var(--near-black)', height: 36, overflow: 'hidden' }}>
+        <div className="marquee-wrap" style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+          <div className="marquee-track" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.6875rem', letterSpacing: '0.08em' }}>
+            {Array(6).fill(['🌿 Certified Organic', '🚚 Free Delivery £50+', '⚡ Same-Day by 2pm', '🌍 Plastic-Free Packaging', '⭐ 50,000+ Happy Customers', '♻️ Carbon Neutral Delivery']).flat().map((t, i) => (
+              <span key={i} style={{ marginRight: '4rem' }}>{t}</span>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Main header */}
-      <header className={`header-sticky${scrolled ? ' scrolled' : ''}`}>
-        <div className="page-container">
-          <div className="flex items-center h-16 gap-4">
+      {/* Header */}
+      <header className={`header${scrolled ? ' scrolled' : ''}`}>
+        <div className="container">
+          <div style={{ height: 60, display: 'flex', alignItems: 'center', gap: '1rem' }}>
+
+            {/* Hamburger - mobile */}
+            <button className="show-mobile btn btn-ghost btn-icon"
+              onClick={() => setMobileOpen(true)} aria-label="Menu"
+              style={{ color: 'var(--ink)', border: '1px solid var(--hairline)', background: '#fff' }}>
+              <Menu size={18} />
+            </button>
+
             {/* Logo */}
-            <Link href="/" onClick={closeAll} className="flex items-center gap-2 shrink-0 mr-2">
-              <div style={{ background: 'var(--accent-green)', width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Link href="/" onClick={close} style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+              <div style={{ width: 30, height: 30, borderRadius: 8, background: 'linear-gradient(135deg, var(--green), #27ae60)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 3px 10px rgba(26,122,74,0.35)' }}>
                 <Leaf size={14} color="#fff" />
               </div>
-              <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.04em', color: 'var(--ink)' }}>
-                FRESHMART
-              </span>
+              <span style={{ fontSize: '1.0625rem', fontWeight: 800, letterSpacing: '-0.04em', color: 'var(--ink)' }}>FRESHMART</span>
             </Link>
 
             {/* Desktop nav */}
-            <nav className="hide-mobile flex items-center gap-1 flex-1">
+            <nav className="hide-mobile" style={{ display: 'flex', gap: '0.125rem', flex: 1, justifyContent: 'center' }}>
               {NAV.map(n => (
                 <Link key={n.href} href={n.href}
-                  className="btn-ghost text-12"
-                  style={{ color: 'var(--slate)', padding: '6px 10px' }}>
+                  className="btn btn-ghost"
+                  style={{ fontSize: '0.8125rem', color: 'var(--slate)', padding: '0.4rem 0.7rem' }}>
                   {n.label}
                 </Link>
               ))}
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-1 ml-auto">
-              {/* Search */}
-              <button onClick={() => setSearchOpen(true)}
-                style={{ width: 40, height: 40, borderRadius: 'var(--radius-pill)', border: '1px solid var(--hairline)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', cursor: 'pointer', transition: 'all 0.15s', color: 'var(--ink)' }}
-                className="hover:border-[var(--ink)]"
-                aria-label="Search">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem', marginLeft: 'auto' }}>
+              <button className="btn btn-ghost btn-icon" onClick={() => setSearchOpen(true)}
+                style={{ border: '1px solid var(--hairline)', color: 'var(--ink)' }}>
                 <Search size={17} />
               </button>
 
-              {/* Wishlist */}
-              <Link href="/wishlist"
-                style={{ width: 40, height: 40, borderRadius: 'var(--radius-pill)', border: '1px solid var(--hairline)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', position: 'relative', color: 'var(--ink)' }}
-                aria-label="Wishlist">
+              <Link href="/wishlist" className="btn btn-ghost btn-icon"
+                style={{ border: '1px solid var(--hairline)', color: 'var(--ink)', position: 'relative', display: 'flex' }}>
                 <Heart size={17} />
                 {wCount > 0 && (
-                  <span style={{ position: 'absolute', top: -4, right: -4, width: 17, height: 17, background: 'var(--violet)', color: '#fff', borderRadius: '50%', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ position: 'absolute', top: -5, right: -5, width: 17, height: 17, borderRadius: '50%', background: 'var(--violet)', color: '#fff', fontSize: '0.5625rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {wCount}
                   </span>
                 )}
               </Link>
 
-              {/* Cart */}
               <button onClick={() => setIsOpen(true)}
-                style={{ height: 40, borderRadius: 'var(--radius-pill)', padding: '0 16px', background: 'var(--ink)', color: '#fff', border: 'none', display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', fontSize: 13, fontWeight: 500, letterSpacing: '-0.02em', position: 'relative', transition: 'all 0.15s' }}
-                className="hide-mobile"
-                aria-label="Cart">
-                <ShoppingBag size={16} />
-                Cart
+                className="hide-mobile btn btn-primary btn-sm"
+                style={{ gap: 6, position: 'relative' }}>
+                <ShoppingBag size={15} /> Cart
                 {count > 0 && (
-                  <span style={{ background: 'var(--violet)', borderRadius: 99, padding: '1px 7px', fontSize: 11, fontWeight: 700 }}>{count}</span>
+                  <span style={{ background: 'var(--violet)', borderRadius: 99, padding: '0 6px', fontSize: '0.6875rem', fontWeight: 800 }}>{count}</span>
                 )}
               </button>
 
-              {/* Mobile cart icon */}
               <button onClick={() => setIsOpen(true)}
-                style={{ width: 40, height: 40, borderRadius: 'var(--radius-pill)', border: '1px solid var(--hairline)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', position: 'relative', cursor: 'pointer', color: 'var(--ink)' }}
-                className="show-mobile"
-                aria-label="Cart">
+                className="show-mobile btn btn-ghost btn-icon"
+                style={{ border: '1px solid var(--hairline)', color: 'var(--ink)', position: 'relative', display: 'flex' }}>
                 <ShoppingBag size={17} />
                 {count > 0 && (
-                  <span style={{ position: 'absolute', top: -4, right: -4, width: 17, height: 17, background: 'var(--violet)', color: '#fff', borderRadius: '50%', fontSize: 9, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{count}</span>
+                  <span style={{ position: 'absolute', top: -5, right: -5, width: 17, height: 17, borderRadius: '50%', background: 'var(--ink)', color: '#fff', fontSize: '0.5625rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{count}</span>
                 )}
-              </button>
-
-              {/* Hamburger */}
-              <button onClick={() => setMobileOpen(!mobileOpen)}
-                className="show-mobile"
-                style={{ width: 40, height: 40, borderRadius: 'var(--radius-pill)', border: '1px solid var(--hairline)', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff', cursor: 'pointer', color: 'var(--ink)' }}
-                aria-label="Menu">
-                <div style={{ position: 'relative', width: 18, height: 14 }}>
-                  <span style={{ position: 'absolute', left: 0, width: '100%', height: 2, background: 'var(--ink)', borderRadius: 2, transition: 'all 0.25s cubic-bezier(0.25,0.46,0.45,0.94)', top: mobileOpen ? '50%' : 0, transform: mobileOpen ? 'translateY(-50%) rotate(45deg)' : 'none' }} />
-                  <span style={{ position: 'absolute', left: 0, top: '50%', transform: 'translateY(-50%)', width: '100%', height: 2, background: 'var(--ink)', borderRadius: 2, transition: 'all 0.25s', opacity: mobileOpen ? 0 : 1 }} />
-                  <span style={{ position: 'absolute', left: 0, width: '100%', height: 2, background: 'var(--ink)', borderRadius: 2, transition: 'all 0.25s cubic-bezier(0.25,0.46,0.45,0.94)', bottom: mobileOpen ? '50%' : 0, transform: mobileOpen ? 'translateY(50%) rotate(-45deg)' : 'none' }} />
-                </div>
               </button>
             </div>
           </div>
         </div>
+
+        {/* Search overlay */}
+        {searchOpen && (
+          <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, background: '#fff', borderBottom: '1px solid var(--hairline)', padding: '1rem 0', boxShadow: '0 8px 32px rgba(0,0,0,0.08)', zIndex: 99 }}>
+            <div className="container">
+              <form onSubmit={search} style={{ display: 'flex', gap: '0.625rem', alignItems: 'center' }}>
+                <Search size={18} style={{ color: 'var(--muted)', flexShrink: 0 }} />
+                <input ref={inputRef} type="text" value={q} onChange={e => setQ(e.target.value)}
+                  placeholder="Search products, categories..."
+                  style={{ flex: 1, border: 'none', outline: 'none', fontSize: '1rem', fontFamily: 'inherit', color: 'var(--ink)', background: 'transparent' }} />
+                <button type="button" className="btn btn-ghost" style={{ fontSize: '0.8125rem' }} onClick={() => setSearchOpen(false)}>Cancel</button>
+                <button type="submit" className="btn btn-primary btn-sm">Search</button>
+              </form>
+            </div>
+          </div>
+        )}
+        {searchOpen && <div style={{ position: 'fixed', inset: 0, top: 96, zIndex: 98 }} onClick={() => setSearchOpen(false)} />}
       </header>
 
-      {/* Search overlay */}
-      {searchOpen && (
+      {/* Mobile drawer */}
+      {mobileOpen && (
         <>
-          <div className="search-overlay" onClick={() => setSearchOpen(false)} />
-          <div className="search-box">
-            <form onSubmit={handleSearch} style={{ maxWidth: 640, margin: '0 auto', position: 'relative' }}>
-              <input ref={searchRef} type="text" value={query} onChange={e => setQuery(e.target.value)}
-                placeholder="Search products, categories..."
-                className="input-pill" style={{ paddingRight: 120 }} />
-              <div style={{ position: 'absolute', right: 6, top: '50%', transform: 'translateY(-50%)', display: 'flex', gap: 6 }}>
-                <button type="button" onClick={() => setSearchOpen(false)} className="btn-ghost" style={{ padding: '6px 10px', fontSize: 12 }}>Cancel</button>
-                <button type="submit" className="btn-violet" style={{ padding: '10px 16px', fontSize: 13 }}>
-                  <ArrowRight size={14} />
-                </button>
-              </div>
-            </form>
+          <div className="mobile-menu-overlay" onClick={() => setMobileOpen(false)} />
+          <div className="mobile-menu">
+            <div style={{ padding: '1.25rem 1.25rem 1rem', borderBottom: '1px solid var(--hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Link href="/" onClick={close} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <div style={{ width: 28, height: 28, borderRadius: 7, background: 'linear-gradient(135deg, var(--green), #27ae60)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Leaf size={13} color="#fff" />
+                </div>
+                <span style={{ fontWeight: 800, fontSize: '1rem', letterSpacing: '-0.04em' }}>FRESHMART</span>
+              </Link>
+              <button className="btn btn-ghost btn-icon" onClick={() => setMobileOpen(false)}
+                style={{ border: '1px solid var(--hairline)' }}>
+                <X size={17} />
+              </button>
+            </div>
+
+            <div style={{ padding: '0.75rem 1rem' }}>
+              <form onSubmit={search} style={{ position: 'relative' }}>
+                <Search size={15} style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--muted)' }} />
+                <input type="text" value={q} onChange={e => setQ(e.target.value)} placeholder="Search..."
+                  className="input" style={{ paddingLeft: '2.5rem', fontSize: '0.875rem' }} />
+              </form>
+            </div>
+
+            <nav>
+              {NAV.map((n, i) => (
+                <Link key={n.href} href={n.href} onClick={close}
+                  className="afu"
+                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.9375rem 1.25rem', borderBottom: '1px solid var(--hairline)', color: 'var(--ink)', fontWeight: 500, fontSize: '0.9375rem', animationDelay: `${i * 0.04}s` }}>
+                  {n.label} <ArrowRight size={15} style={{ color: 'var(--muted)' }} />
+                </Link>
+              ))}
+            </nav>
+
+            <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.625rem', marginTop: 'auto' }}>
+              <Link href="/wishlist" onClick={close} className="btn btn-outline" style={{ justifyContent: 'center' }}>
+                <Heart size={15} /> Wishlist {wCount > 0 && `(${wCount})`}
+              </Link>
+              <button onClick={() => { setIsOpen(true); close(); }} className="btn btn-primary" style={{ justifyContent: 'center' }}>
+                <ShoppingBag size={15} /> Cart {count > 0 && `(${count})`}
+              </button>
+            </div>
           </div>
         </>
-      )}
-
-      {/* Mobile menu */}
-      {mobileOpen && (
-        <div className="mobile-menu" style={{ paddingTop: 20 }}>
-          <div style={{ padding: '0 20px 20px', borderBottom: '1px solid var(--hairline)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <Link href="/" onClick={closeAll} className="flex items-center gap-2">
-              <div style={{ background: 'var(--accent-green)', width: 28, height: 28, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Leaf size={14} color="#fff" />
-              </div>
-              <span style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.04em' }}>FRESHMART</span>
-            </Link>
-            <button onClick={() => setMobileOpen(false)} style={{ width: 36, height: 36, borderRadius: 99, border: '1px solid var(--hairline)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#fff' }}>
-              <X size={16} />
-            </button>
-          </div>
-
-          {/* Mobile search */}
-          <div style={{ padding: '16px 20px' }}>
-            <form onSubmit={handleSearch} style={{ position: 'relative' }}>
-              <Search size={16} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--slate)' }} />
-              <input type="text" value={query} onChange={e => setQuery(e.target.value)}
-                placeholder="Search..."
-                className="input-field"
-                style={{ paddingLeft: 40, borderRadius: 'var(--radius-pill)' }} />
-            </form>
-          </div>
-
-          {/* Nav links */}
-          <nav>
-            {NAV.map((n, i) => (
-              <Link key={n.href} href={n.href} onClick={closeAll}
-                className="anim-fade-up"
-                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 20px', fontSize: 16, letterSpacing: '-0.02em', borderBottom: '1px solid var(--hairline)', color: 'var(--ink)', textDecoration: 'none', animationDelay: `${i * 0.04}s` }}>
-                {n.label}
-                <ArrowRight size={16} style={{ color: 'var(--slate)' }} />
-              </Link>
-            ))}
-          </nav>
-
-          <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <Link href="/wishlist" onClick={closeAll} className="btn-outline" style={{ width: '100%', justifyContent: 'center' }}>
-              <Heart size={16} /> Wishlist {wCount > 0 && `(${wCount})`}
-            </Link>
-            <button onClick={() => { setIsOpen(true); closeAll(); }} className="btn-violet" style={{ width: '100%' }}>
-              <ShoppingBag size={16} /> Cart {count > 0 && `(${count})`}
-            </button>
-          </div>
-        </div>
       )}
     </>
   );

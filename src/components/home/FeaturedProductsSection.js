@@ -4,22 +4,24 @@ import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
 export default function FeaturedProductsSection({ products = [] }) {
-  const featured = products.filter(p => p.isFeatured).slice(0, 8);
-  if (!featured.length) return null;
+  const list = products.filter(p => p.isFeatured).slice(0, 8);
+  if (!list.length) return null;
+
   return (
-    <section className="section">
-      <div className="page-container">
-        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 28, flexWrap: 'wrap', gap: 16 }}>
+    <section className="section" style={{ background: '#fff' }}>
+      <div className="container">
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 'clamp(1.5rem,4vw,2.25rem)', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <p style={{ fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--violet)', marginBottom: 4 }}>Handpicked</p>
-            <h2 style={{ fontSize: 28, fontWeight: 700, letterSpacing: '-0.03em' }}>Editor's Selection</h2>
+            <span className="eyebrow">Handpicked</span>
+            <h2 className="t-h2">Editor's Selection</h2>
+            <p className="t-body" style={{ marginTop: '0.5rem', maxWidth: 420 }}>Our team's picks for the finest seasonal and artisan products this week.</p>
           </div>
-          <Link href="/products" className="btn-ghost" style={{ color: 'var(--slate)', display: 'inline-flex', gap: 4, fontSize: 13 }}>
-            Browse All <ArrowRight size={14} />
+          <Link href="/products" className="btn btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--slate)', flexShrink: 0 }}>
+            Browse All <ArrowRight size={15} />
           </Link>
         </div>
         <div className="product-grid">
-          {featured.map((p, i) => <ProductCard key={p.id || p._id} product={p} index={i} />)}
+          {list.map((p, i) => <ProductCard key={p.id || p._id} product={p} index={i} />)}
         </div>
       </div>
     </section>
