@@ -202,7 +202,7 @@ export default function ProductDetailPage() {
             ))}
           </div>
           <div className="afi" key={tab} style={{ maxWidth:680 }}>
-            {tab==='description' && <p className="t-body" style={{ fontSize:'clamp(0.9375rem,2vw,1.0625rem)',lineHeight:1.8 }}>{product.description}</p>}
+            {tab==='description' && <div className="t-body prose-content" style={{ fontSize:'clamp(0.9375rem,2vw,1.0625rem)',lineHeight:1.8 }} dangerouslySetInnerHTML={{ __html: product.description || '' }}/>}
             {tab==='highlights' && (
               <ul style={{ display:'flex',flexDirection:'column',gap:'0.875rem',listStyle:'none' }}>
                 {product.highlights?.map((h,i)=>(

@@ -11,6 +11,7 @@ export async function GET(request) {
   const flashSale = searchParams.get('flashSale');
   const newArrival = searchParams.get('newArrival');
   const organic = searchParams.get('organic');
+  const type = searchParams.get('type'); // generic type slug, e.g. "featured" — works for any admin-created type, not just the three legacy booleans above
   const minPrice = parseFloat(searchParams.get('minPrice') || '0');
   const maxPrice = parseFloat(searchParams.get('maxPrice') || '999');
 
@@ -23,6 +24,7 @@ export async function GET(request) {
       if (flashSale) query.isFlashSale = true;
       if (newArrival) query.isNewArrival = true;
       if (organic) query.isOrganic = true;
+      if (type) query.types = type;
       if (search) query.$or = [{ name: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }];
       query.price = { $gte: minPrice, $lte: maxPrice };
       products = await Product.find(query).lean();
@@ -32,6 +34,7 @@ export async function GET(request) {
       if (flashSale) products = products.filter(p => p.isFlashSale);
       if (newArrival) products = products.filter(p => p.isNewArrival);
       if (organic) products = products.filter(p => p.isOrganic);
+      if (type) products = products.filter(p => Array.isArray(p.types) && p.types.includes(type));
       if (search) products = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.category.toLowerCase().includes(search.toLowerCase()));
       products = products.filter(p => p.price >= minPrice && p.price <= maxPrice);
     }

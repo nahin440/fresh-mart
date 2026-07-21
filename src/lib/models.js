@@ -1,5 +1,36 @@
 import mongoose from 'mongoose';
 
+// A Type's slug is what links it to the legacy boolean flags below (isFlashSale
+// etc.) that the storefront (home sections, product cards, filters) already
+// reads directly. Seeding or admin-creating a Type with one of these slugs
+// means any product tagged with it keeps working everywhere on the site with
+// zero changes to storefront components. Types with other slugs are supported
+// too — they just won't have a legacy boolean counterpart.
+export const LEGACY_TYPE_SLUGS = {
+  'flash-sale': 'isFlashSale',
+  'new-arrivals': 'isNewArrival',
+  'featured': 'isFeatured',
+  'best-seller': 'isBestSeller',
+  'organic': 'isOrganic',
+};
+
+const CategorySchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  slug: { type: String, required: true, unique: true },
+  image: String,
+  description: String,
+  isActive: { type: Boolean, default: true },
+}, { timestamps: true });
+
+const TypeSchema = new mongoose.Schema({
+  name: { type: String, required: true, unique: true },
+  slug: { type: String, required: true, unique: true },
+  description: String,
+  image: String,
+  color: { type: String, default: 'violet' }, // used for badge styling in admin UI
+  isActive: { type: Boolean, default: true },
+}, { timestamps: true });
+
 const ProductSchema = new mongoose.Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true, unique: true },
@@ -21,6 +52,12 @@ const ProductSchema = new mongoose.Schema({
   image: String,
   images: [String],
   tags: [String],
+  // Canonical multi-select "type" field — an array of Type slugs (e.g.
+  // ['organic', 'new-arrivals']). A product can carry any number of these.
+  types: { type: [String], default: [] },
+  // Legacy single-purpose flags, kept for backward compatibility with the
+  // existing storefront. These are auto-derived from `types` in the pre-save
+  // hook below — don't set them directly from admin UI, set `types` instead.
   isFlashSale: { type: Boolean, default: false },
   isNewArrival: { type: Boolean, default: false },
   isFeatured: { type: Boolean, default: false },
@@ -28,6 +65,32 @@ const ProductSchema = new mongoose.Schema({
   isOrganic: { type: Boolean, default: false },
   isActive: { type: Boolean, default: true },
 }, { timestamps: true });
+
+ProductSchema.pre('save', function(next) {
+  const types = Array.isArray(this.types) ? this.types : [];
+  for (const [slug, flagField] of Object.entries(LEGACY_TYPE_SLUGS)) {
+    this[flagField] = types.includes(slug);
+  }
+  next();
+});
+
+// findByIdAndUpdate/findOneAndUpdate bypass document middleware by default,
+// so the same sync has to happen here too or admin edits made via PUT would
+// silently stop updating the legacy flags.
+ProductSchema.pre(['findOneAndUpdate'], function(next) {
+  const update = this.getUpdate() || {};
+  const nextTypes = update.types ?? update.$set?.types;
+  if (nextTypes !== undefined) {
+    const types = Array.isArray(nextTypes) ? nextTypes : [];
+    const flags = {};
+    for (const [slug, flagField] of Object.entries(LEGACY_TYPE_SLUGS)) {
+      flags[flagField] = types.includes(slug);
+    }
+    if (update.$set) Object.assign(update.$set, flags);
+    else Object.assign(update, flags);
+  }
+  next();
+});
 
 const OrderSchema = new mongoose.Schema({
   orderNumber: { type: String, unique: true },
@@ -63,3 +126,5 @@ OrderSchema.pre('save', function(next) {
 
 export const Product = mongoose.models.Product || mongoose.model('Product', ProductSchema);
 export const Order = mongoose.models.Order || mongoose.model('Order', OrderSchema);
+export const Category = mongoose.models.Category || mongoose.model('Category', CategorySchema);
+export const Type = mongoose.models.Type || mongoose.model('Type', TypeSchema);

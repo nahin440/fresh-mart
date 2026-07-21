@@ -9,6 +9,8 @@ import TestimonialsSection   from '@/components/home/TestimonialsSection';
 import TrustSection          from '@/components/home/TrustSection';
 import NewsletterSection     from '@/components/home/NewsletterSection';
 import productsData          from '@/lib/products.json';
+import categoriesData        from '@/lib/categories.json';
+import typesData             from '@/lib/types.json';
 
 export const metadata = {
   title: 'FreshMart — Premium Organic Grocery Delivered',
@@ -29,16 +31,48 @@ async function getProducts() {
   return productsData;
 }
 
+async function getCategories() {
+  try {
+    const { connectDB } = await import('@/lib/mongodb');
+    const { Category }  = await import('@/lib/models');
+    const db = await connectDB();
+    if (db) {
+      const dbCats = await Category.find({ isActive:true }).sort({ name:1 }).lean();
+      if (dbCats.length > 0)
+        return dbCats.map(c => ({ ...c, _id: c._id.toString() }));
+    }
+  } catch {}
+  return categoriesData;
+}
+
+async function getTypes() {
+  try {
+    const { connectDB } = await import('@/lib/mongodb');
+    const { Type }       = await import('@/lib/models');
+    const db = await connectDB();
+    if (db) {
+      const dbTypes = await Type.find({ isActive:true }).sort({ name:1 }).lean();
+      if (dbTypes.length > 0)
+        return dbTypes.map(t => ({ ...t, _id: t._id.toString() }));
+    }
+  } catch {}
+  return typesData;
+}
+
 export default async function HomePage() {
-  const products = await getProducts();
+  const [products, categories, types] = await Promise.all([
+    getProducts(),
+    getCategories(),
+    getTypes(),
+  ]);
   return (
     <>
       <HeroSection />
-      <CategorySection />
-      <BestSellersSection    products={products} />
-      <FlashSaleSection      products={products} />
+      <CategorySection      categories={categories} />
+      <BestSellersSection   products={products} types={types} />
+      <FlashSaleSection     products={products} />
       <FeaturedBannerSection />
-      <NewArrivalsSection    products={products} />
+      <NewArrivalsSection   products={products} />
       <FeaturedProductsSection products={products} />
       <TestimonialsSection />
       <TrustSection />
