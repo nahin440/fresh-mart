@@ -117,17 +117,50 @@ export default function ProductForm({ initial = {}, mode = 'add', productId }) {
     if (!form.name.trim() || !form.price) { toast.error('Name and price are required'); return; }
     if (!form.category) { toast.error('Please select a category'); return; }
     setSaving(true);
+
+    
     const payload = {
-      name: form.name.trim(), slug: form.slug || autoSlug(form.name), category: form.category, subcategory: form.subcategory,
-      price: parseFloat(form.price), originalPrice: form.originalPrice ? parseFloat(form.originalPrice) : undefined,
-      discount: form.discount ? parseInt(form.discount) : undefined, unit: form.unit, weight: form.weight,
-      stock: parseInt(form.stock) || 0, rating: parseFloat(form.rating) || 4.5, reviews: parseInt(form.reviews) || 0,
+      name: form.name.trim(),
+      slug: form.slug || autoSlug(form.name),
+      category: form.category,
+      subcategory: form.subcategory,
+
+      price: Number(form.price),
+      originalPrice: form.originalPrice ? Number(form.originalPrice) : undefined,
+      discount: form.discount ? Number(form.discount) : undefined,
+
+      unit: form.unit,
+      weight: form.weight,
+
+      stock: Number(form.stock) || 0,
+      rating: Number(form.rating) || 4.5,
+      reviews: Number(form.reviews) || 0,
+
       description: form.description,
-      highlights: form.highlights.split('\n').map(s => s.trim()).filter(Boolean),
-      image: form.image, images: form.images,
-      tags: form.tags.split(',').map(s => s.trim()).filter(Boolean),
+
+      highlights: form.highlights
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
+
+      image: form.image,
+      images: form.images,
+
+      tags: form.tags
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean),
+
       types: form.types,
-      nutrition: { calories: form.cal, fat: form.fat, carbs: form.carbs, protein: form.protein, fiber: form.fiber },
+
+      nutrition: {
+        calories: form.cal ? Number(form.cal) : undefined,
+        fat: form.fat || undefined,
+        carbs: form.carbs || undefined,
+        protein: form.protein || undefined,
+        fiber: form.fiber || undefined,
+      },
+
       isActive: true,
     };
     try {
