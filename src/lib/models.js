@@ -14,6 +14,24 @@ export const LEGACY_TYPE_SLUGS = {
   'organic': 'isOrganic',
 };
 
+// Each homepage section is one of a fixed set of "kinds" (the bespoke,
+// visually distinct sections already built — flash-sale, new-arrivals,
+// featured, best-sellers, hero, category-strip, testimonials, trust,
+// newsletter, banner) or "custom", a generic type/category-filtered product
+// row that can be added any number of times with its own title and filter.
+// `enabled` and `order` let admin toggle visibility and drag-reorder without
+// touching any component code; `limit` controls how many products show.
+const HomeSectionSchema = new mongoose.Schema({
+  kind: { type: String, required: true }, // 'hero' | 'category-strip' | 'flash-sale' | 'new-arrivals' | 'featured' | 'best-sellers' | 'testimonials' | 'trust' | 'newsletter' | 'banner' | 'custom'
+  title: String,            // display heading — used as-is for 'custom', ignored (bespoke copy) by most built-in kinds
+  subtitle: String,
+  limit: { type: Number, default: 8 },
+  filterType: String,       // for 'custom' kind: a Type slug to filter products by (e.g. 'organic')
+  filterCategory: String,   // for 'custom' kind: a Category name to filter products by, alternative to filterType
+  enabled: { type: Boolean, default: true },
+  order: { type: Number, required: true },
+}, { timestamps: true });
+
 const CategorySchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },
   slug: { type: String, required: true, unique: true },
@@ -128,3 +146,4 @@ export const Product = mongoose.models.Product || mongoose.model('Product', Prod
 export const Order = mongoose.models.Order || mongoose.model('Order', OrderSchema);
 export const Category = mongoose.models.Category || mongoose.model('Category', CategorySchema);
 export const Type = mongoose.models.Type || mongoose.model('Type', TypeSchema);
+export const HomeSection = mongoose.models.HomeSection || mongoose.model('HomeSection', HomeSectionSchema);

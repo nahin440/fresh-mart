@@ -104,6 +104,14 @@ button { font-family: inherit; cursor: pointer; }
   width: 2.5rem; height: 2.5rem; border-radius: 50%; padding: 0;
   display: inline-flex; align-items: center; justify-content: center;
 }
+.btn-icon-sm {
+  width: 1.875rem; height: 1.875rem; border-radius: 8px; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #fff; border: 1.5px solid var(--hairline); color: var(--slate);
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-icon-sm:hover:not(:disabled) { border-color: var(--violet); color: var(--violet); }
+.btn-icon-sm:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* ─── CARDS ─── */
 .card {

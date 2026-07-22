@@ -4,7 +4,7 @@ import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
-export default function BestSellersSection({ products = [], types = [] }) {
+export default function BestSellersSection({ products = [], types = [], limit = 8, title = 'Shop by Type' }) {
   // "All" is a pseudo-tab that isn't a real Type document — it just shows
   // the top-rated/best-selling products with no type filter applied, so the
   // section still has something sensible to show even before any types
@@ -19,7 +19,7 @@ export default function BestSellersSection({ products = [], types = [] }) {
   const list = (activeSlug
     ? products.filter(p => Array.isArray(p.types) && p.types.includes(activeSlug))
     : [...products].sort((a, b) => (b.rating || 0) - (a.rating || 0))
-  ).slice(0, 8);
+  ).slice(0, limit);
 
   return (
     <section className="section" style={{ background: '#fff' }}>
@@ -28,7 +28,7 @@ export default function BestSellersSection({ products = [], types = [] }) {
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: '1rem', marginBottom: 'clamp(1.5rem,4vw,2.25rem)' }}>
           <div>
             <span className="eyebrow">Customer Favourites</span>
-            <h2 className="t-h2">Shop by Type</h2>
+            <h2 className="t-h2">{title}</h2>
           </div>
           <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
             {tabs.map((t, i) => (

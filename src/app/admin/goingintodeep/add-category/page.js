@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { ListTree, Loader, Check } from 'lucide-react';
+import { ListTree, Loader, Check, Edit2, Trash2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ImageDropzone } from '@/components/admin/ImageDropzone';
 
@@ -11,6 +11,9 @@ export default function AddCategoryPage() {
   const [saving, setSaving] = useState(false);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null);
+  const [editDraft, setEditDraft] = useState({});
+  const [busyId, setBusyId] = useState(null);
 
   const load = () => {
     fetch('/api/categories').then(r => r.json())
@@ -36,6 +39,43 @@ export default function AddCategoryPage() {
       load();
     } catch (err) { toast.error(err.message); }
     setSaving(false);
+  };
+
+  const startEdit = (c) => {
+    setEditingId(c._id);
+    setEditDraft({ name: c.name, description: c.description || '', image: c.image || '' });
+  };
+
+  const cancelEdit = () => { setEditingId(null); setEditDraft({}); };
+
+  const saveEdit = async (id) => {
+    if (!editDraft.name?.trim()) { toast.error('Category name is required'); return; }
+    setBusyId(id);
+    try {
+      const r = await fetch(`/api/categories/${id}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editDraft),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Could not save');
+      toast.success('Category updated!');
+      cancelEdit();
+      load();
+    } catch (err) { toast.error(err.message); }
+    setBusyId(null);
+  };
+
+  const deleteCategory = async (c) => {
+    if (!confirm(`Delete "${c.name}"? This can't be undone.`)) return;
+    setBusyId(c._id);
+    try {
+      const r = await fetch(`/api/categories/${c._id}`, { method: 'DELETE' });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Could not delete');
+      toast.success('Category deleted');
+      load();
+    } catch (err) { toast.error(err.message); }
+    setBusyId(null);
   };
 
   return (
@@ -81,14 +121,36 @@ export default function AddCategoryPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.625rem' }}>
             {categories.map(c => (
               <div key={c.slug || c._id} style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', padding: '0.625rem 0.75rem', borderRadius: 10, background: 'var(--canvas)' }}>
-                <div style={{ width: 36, height: 36, borderRadius: 8, overflow: 'hidden', background: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {c.image ? <img src={c.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} /> : <ListTree size={16} style={{ color: 'var(--muted)' }} />}
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: '0.875rem', fontWeight: 600 }}>{c.name}</p>
-                  {c.description && <p style={{ fontSize: '0.75rem', color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.description}</p>}
-                </div>
-                <span style={{ fontSize: '0.6875rem', color: 'var(--muted)', fontFamily: 'monospace' }}>/{c.slug}</span>
+                {editingId === c._id ? (
+                  <>
+                    <div style={{ width: 36, height: 36, borderRadius: 8, overflow: 'hidden', background: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {editDraft.image ? <img src={editDraft.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} /> : <ListTree size={16} style={{ color: 'var(--muted)' }} />}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
+                      <input type="text" value={editDraft.name} onChange={e => setEditDraft(d => ({ ...d, name: e.target.value }))} className="input" style={{ fontSize: '0.8125rem', padding: '0.4rem 0.6rem' }} placeholder="Name" />
+                      <input type="text" value={editDraft.description} onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))} className="input" style={{ fontSize: '0.8125rem', padding: '0.4rem 0.6rem' }} placeholder="Description" />
+                    </div>
+                    <button onClick={() => saveEdit(c._id)} disabled={busyId === c._id} className="btn-icon-sm" style={{ color: 'var(--violet)' }} aria-label="Save">
+                      {busyId === c._id ? <Loader size={14} className="spin" /> : <Check size={14} />}
+                    </button>
+                    <button onClick={cancelEdit} className="btn-icon-sm" aria-label="Cancel"><X size={14} /></button>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ width: 36, height: 36, borderRadius: 8, overflow: 'hidden', background: '#fff', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {c.image ? <img src={c.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} /> : <ListTree size={16} style={{ color: 'var(--muted)' }} />}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: '0.875rem', fontWeight: 600 }}>{c.name}</p>
+                      {c.description && <p style={{ fontSize: '0.75rem', color: 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.description}</p>}
+                    </div>
+                    <span style={{ fontSize: '0.6875rem', color: 'var(--muted)', fontFamily: 'monospace' }}>/{c.slug}</span>
+                    <button onClick={() => startEdit(c)} className="btn-icon-sm" aria-label="Edit"><Edit2 size={13} /></button>
+                    <button onClick={() => deleteCategory(c)} disabled={busyId === c._id} className="btn-icon-sm" style={{ color: '#e74c3c' }} aria-label="Delete">
+                      {busyId === c._id ? <Loader size={13} className="spin" /> : <Trash2 size={13} />}
+                    </button>
+                  </>
+                )}
               </div>
             ))}
           </div>

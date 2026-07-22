@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Package, PlusCircle, ShoppingCart, Leaf, ArrowLeft, Tags, ListTree } from 'lucide-react';
+import { LayoutDashboard, Package, PlusCircle, ShoppingCart, Leaf, ArrowLeft, Tags, ListTree, LayoutTemplate } from 'lucide-react';
 
 const NAV = [
   { label:'Dashboard',    href:'/admin/goingintodeep',              icon:LayoutDashboard },
@@ -9,6 +9,7 @@ const NAV = [
   { label:'Add Product',  href:'/admin/goingintodeep/add-product',  icon:PlusCircle },
   { label:'Categories',   href:'/admin/goingintodeep/add-category', icon:ListTree },
   { label:'Types',        href:'/admin/goingintodeep/add-type',     icon:Tags },
+  { label:'Customize Home', href:'/admin/goingintodeep/customize-home', icon:LayoutTemplate },
   { label:'Orders',       href:'/admin/goingintodeep/orders',       icon:ShoppingCart },
 ];
 

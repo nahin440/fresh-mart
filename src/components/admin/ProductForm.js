@@ -27,6 +27,35 @@ const deriveInitialTypes = (initial) => {
   return Object.entries(LEGACY_FLAG_TO_SLUG).filter(([flag]) => initial[flag]).map(([, slug]) => slug);
 };
 
+// Field and Card must live outside ProductForm, not inside it. A component
+// defined inside another component's function body gets recreated (a new
+// function reference) on every re-render of the parent — and ProductForm
+// re-renders on every keystroke (each keystroke calls setForm). React
+// treats a new function reference as a brand-new component type, so it
+// unmounts and remounts the whole subtree, including the <input> itself,
+// which drops focus after every character. Keeping these at module scope
+// gives them a stable identity so React just updates props instead of
+// tearing the DOM node down and rebuilding it.
+const Field = ({ label, k, form, set, type = 'text', ph = '', req, hint, half }) => (
+  <div style={{ gridColumn: half ? 'auto' : '1/-1' }}>
+    <label style={{ display: 'block', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--slate)', marginBottom: '0.375rem' }}>
+      {label}{req && <span style={{ color: '#e74c3c' }}> *</span>}
+    </label>
+    <input type={type} value={form[k]} onChange={e => set(k, e.target.value)} placeholder={ph} required={req} className="input" />
+    {hint && <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '0.25rem' }}>{hint}</p>}
+  </div>
+);
+
+const Card = ({ title, children, action }) => (
+  <div className="admin-card" style={{ padding: '1.5rem', marginBottom: '1rem' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '1px solid var(--hairline)' }}>
+      <h3 style={{ fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.02em' }}>{title}</h3>
+      {action}
+    </div>
+    {children}
+  </div>
+);
+
 export default function ProductForm({ initial = {}, mode = 'add', productId }) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
@@ -110,32 +139,13 @@ export default function ProductForm({ initial = {}, mode = 'add', productId }) {
     setSaving(false);
   };
 
-  const Field = ({ label, k, type = 'text', ph = '', req, hint, half }) => (
-    <div style={{ gridColumn: half ? 'auto' : '1/-1' }}>
-      <label style={{ display: 'block', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--slate)', marginBottom: '0.375rem' }}>
-        {label}{req && <span style={{ color: '#e74c3c' }}> *</span>}
-      </label>
-      <input type={type} value={form[k]} onChange={e => set(k, e.target.value)} placeholder={ph} required={req} className="input" />
-      {hint && <p style={{ fontSize: '0.75rem', color: 'var(--muted)', marginTop: '0.25rem' }}>{hint}</p>}
-    </div>
-  );
-
-  const Card = ({ title, children, action }) => (
-    <div className="admin-card" style={{ padding: '1.5rem', marginBottom: '1rem' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', paddingBottom: '1rem', borderBottom: '1px solid var(--hairline)' }}>
-        <h3 style={{ fontSize: '1rem', fontWeight: 700, letterSpacing: '-0.02em' }}>{title}</h3>
-        {action}
-      </div>
-      {children}
-    </div>
-  );
 
   return (
     <form onSubmit={submit}>
       <Card title="Basic Information">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <div style={{ gridColumn: '1/-1' }}><Field label="Product Name" k="name" req ph="e.g. Organic Hass Avocados" /></div>
-          <Field label="URL Slug" k="slug" ph="auto-generated" hint="Leave blank to auto-generate" half />
+          <div style={{ gridColumn: '1/-1' }}><Field form={form} set={set} label="Product Name" k="name" req ph="e.g. Organic Hass Avocados" /></div>
+          <Field form={form} set={set} label="URL Slug" k="slug" ph="auto-generated" hint="Leave blank to auto-generate" half />
           <div>
             <label style={{ display: 'block', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--slate)', marginBottom: '0.375rem' }}>Category *</label>
             <select value={form.category} onChange={e => set('category', e.target.value)} className="input" disabled={loadingOptions} required>
@@ -148,18 +158,18 @@ export default function ProductForm({ initial = {}, mode = 'add', productId }) {
               </p>
             )}
           </div>
-          <Field label="Subcategory" k="subcategory" ph="e.g. Fruits" half />
-          <Field label="Unit" k="unit" ph="e.g. pack of 4" half />
-          <Field label="Weight/Volume" k="weight" ph="e.g. 600g" half />
+          <Field form={form} set={set} label="Subcategory" k="subcategory" ph="e.g. Fruits" half />
+          <Field form={form} set={set} label="Unit" k="unit" ph="e.g. pack of 4" half />
+          <Field form={form} set={set} label="Weight/Volume" k="weight" ph="e.g. 600g" half />
         </div>
       </Card>
 
       <Card title="Pricing & Inventory">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem' }}>
-          <Field label="Sale Price (£)" k="price" type="number" req ph="4.99" half />
-          <Field label="Original Price (£)" k="originalPrice" type="number" ph="6.99" half />
-          <Field label="Discount %" k="discount" type="number" ph="29" half />
-          <Field label="Stock Qty" k="stock" type="number" ph="50" half />
+          <Field form={form} set={set} label="Sale Price (£)" k="price" type="number" req ph="4.99" half />
+          <Field form={form} set={set} label="Original Price (£)" k="originalPrice" type="number" ph="6.99" half />
+          <Field form={form} set={set} label="Discount %" k="discount" type="number" ph="29" half />
+          <Field form={form} set={set} label="Stock Qty" k="stock" type="number" ph="50" half />
         </div>
       </Card>
 
@@ -191,7 +201,7 @@ export default function ProductForm({ initial = {}, mode = 'add', productId }) {
             <label style={{ display: 'block', fontSize: '0.6875rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--slate)', marginBottom: '0.375rem' }}>Highlights (one per line)</label>
             <textarea value={form.highlights} onChange={e => set('highlights', e.target.value)} rows={4} className="input" style={{ resize: 'vertical' }} placeholder={"Certified organic\nRich in Omega-3"} />
           </div>
-          <Field label="Tags (comma separated)" k="tags" ph="organic, vegan, keto" />
+          <Field form={form} set={set} label="Tags (comma separated)" k="tags" ph="organic, vegan, keto" />
         </div>
       </Card>
 
@@ -208,8 +218,8 @@ export default function ProductForm({ initial = {}, mode = 'add', productId }) {
 
       <Card title="Rating & Reviews">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-          <Field label="Rating (0–5)" k="rating" type="number" ph="4.5" half />
-          <Field label="Review Count" k="reviews" type="number" ph="124" half />
+          <Field form={form} set={set} label="Rating (0–5)" k="rating" type="number" ph="4.5" half />
+          <Field form={form} set={set} label="Review Count" k="reviews" type="number" ph="124" half />
         </div>
       </Card>
 

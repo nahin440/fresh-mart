@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Tags, Loader, Check } from 'lucide-react';
+import { Tags, Loader, Check, Edit2, Trash2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { ImageDropzone } from '@/components/admin/ImageDropzone';
 
@@ -20,6 +20,9 @@ export default function AddTypePage() {
   const [saving, setSaving] = useState(false);
   const [types, setTypes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingId, setEditingId] = useState(null);
+  const [editDraft, setEditDraft] = useState({});
+  const [busyId, setBusyId] = useState(null);
 
   const load = () => {
     fetch('/api/types').then(r => r.json())
@@ -45,6 +48,43 @@ export default function AddTypePage() {
       load();
     } catch (err) { toast.error(err.message); }
     setSaving(false);
+  };
+
+  const startEdit = (t) => {
+    setEditingId(t._id);
+    setEditDraft({ name: t.name, description: t.description || '', image: t.image || '', color: t.color || 'violet' });
+  };
+
+  const cancelEdit = () => { setEditingId(null); setEditDraft({}); };
+
+  const saveEdit = async (id) => {
+    if (!editDraft.name?.trim()) { toast.error('Type name is required'); return; }
+    setBusyId(id);
+    try {
+      const r = await fetch(`/api/types/${id}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editDraft),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Could not save');
+      toast.success('Type updated!');
+      cancelEdit();
+      load();
+    } catch (err) { toast.error(err.message); }
+    setBusyId(null);
+  };
+
+  const deleteType = async (t) => {
+    if (!confirm(`Delete "${t.name}"? This can't be undone.`)) return;
+    setBusyId(t._id);
+    try {
+      const r = await fetch(`/api/types/${t._id}`, { method: 'DELETE' });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Could not delete');
+      toast.success('Type deleted');
+      load();
+    } catch (err) { toast.error(err.message); }
+    setBusyId(null);
   };
 
   return (
@@ -99,11 +139,12 @@ export default function AddTypePage() {
         ) : types.length === 0 ? (
           <p style={{ color: 'var(--muted)', fontSize: '0.875rem' }}>No types yet — add your first one above.</p>
         ) : (
+          <>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.625rem' }}>
             {types.map(t => {
               const swatch = COLORS.find(c => c.key === t.color)?.swatch || 'var(--violet)';
               return (
-                <div key={t.slug || t._id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.875rem', borderRadius: 100, background: 'var(--canvas)' }}>
+                <div key={t.slug || t._id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 0.5rem 0.5rem 0.875rem', borderRadius: 100, background: editingId === t._id ? 'var(--violet-pale)' : 'var(--canvas)' }}>
                   {t.image ? (
                     <img src={t.image} alt="" style={{ width: 20, height: 20, borderRadius: '50%', objectFit: 'cover' }} onError={e => e.target.style.display = 'none'} />
                   ) : (
@@ -111,10 +152,41 @@ export default function AddTypePage() {
                   )}
                   <span style={{ fontSize: '0.8125rem', fontWeight: 600 }}>{t.name}</span>
                   <span style={{ fontSize: '0.6875rem', color: 'var(--muted)', fontFamily: 'monospace' }}>/{t.slug}</span>
+                  <button onClick={() => (editingId === t._id ? cancelEdit() : startEdit(t))} className="btn-icon-sm" style={{ width: 24, height: 24 }} aria-label="Edit">
+                    {editingId === t._id ? <X size={12} /> : <Edit2 size={12} />}
+                  </button>
+                  <button onClick={() => deleteType(t)} disabled={busyId === t._id} className="btn-icon-sm" style={{ width: 24, height: 24, color: '#e74c3c' }} aria-label="Delete">
+                    {busyId === t._id ? <Loader size={12} className="spin" /> : <Trash2 size={12} />}
+                  </button>
                 </div>
               );
             })}
           </div>
+
+          {editingId && (
+            <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid var(--hairline)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <input type="text" value={editDraft.name} onChange={e => setEditDraft(d => ({ ...d, name: e.target.value }))} className="input" style={{ flex: '1 1 180px', fontSize: '0.875rem' }} placeholder="Name" />
+                <input type="text" value={editDraft.description} onChange={e => setEditDraft(d => ({ ...d, description: e.target.value }))} className="input" style={{ flex: '1 1 180px', fontSize: '0.875rem' }} placeholder="Description" />
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {COLORS.map(c => (
+                  <button type="button" key={c.key} onClick={() => setEditDraft(d => ({ ...d, color: c.key }))}
+                    style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.4rem 0.7rem', borderRadius: 100, border: `1.5px solid ${editDraft.color === c.key ? c.swatch : 'var(--hairline)'}`, background: editDraft.color === c.key ? '#fff' : 'transparent', cursor: 'pointer', fontFamily: 'inherit', fontSize: '0.75rem', fontWeight: 600 }}>
+                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: c.swatch, display: 'inline-block' }} />
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+              <div>
+                <button onClick={() => saveEdit(editingId)} disabled={busyId === editingId}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--violet)', color: '#fff', borderRadius: 100, padding: '0.6rem 1.25rem', fontSize: '0.8125rem', fontWeight: 700, border: 'none', cursor: busyId === editingId ? 'not-allowed' : 'pointer', opacity: busyId === editingId ? 0.7 : 1, fontFamily: 'inherit' }}>
+                  {busyId === editingId ? <><Loader size={13} className="spin" /> Saving...</> : <><Check size={13} /> Save Changes</>}
+                </button>
+              </div>
+            </div>
+          )}
+          </>
         )}
       </div>
     </div>

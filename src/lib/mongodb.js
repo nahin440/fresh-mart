@@ -17,6 +17,15 @@ export async function connectDB() {
       bufferCommands: false,
     });
   }
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (err) {
+    // Don't cache a failed connection attempt — otherwise one bad connect
+    // permanently breaks every request on this warm serverless instance
+    // until Vercel cold-starts a new one, even after the underlying issue
+    // (e.g. a transient network blip, or a not-yet-whitelisted IP) is fixed.
+    cached.promise = null;
+    throw err;
+  }
   return cached.conn;
 }

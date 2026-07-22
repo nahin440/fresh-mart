@@ -20,9 +20,9 @@ function useCountdown() {
   return t;
 }
 
-export default function FlashSaleSection({ products = [] }) {
+export default function FlashSaleSection({ products = [], limit = 4, title = 'Flash Sale' }) {
   const { h, m, s } = useCountdown();
-  const saleProducts = products.filter(p => p.isFlashSale).slice(0, 4);
+  const saleProducts = products.filter(p => p.isFlashSale).slice(0, limit);
   if (!saleProducts.length) return null;
 
   return (
@@ -40,7 +40,7 @@ export default function FlashSaleSection({ products = [] }) {
             </div>
             <div>
               <p style={{ fontSize: '0.6875rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#e74c3c', marginBottom: 2 }}>Limited Time Only</p>
-              <h2 className="t-h2" style={{ color: '#fff' }}>Flash Sale</h2>
+              <h2 className="t-h2" style={{ color: '#fff' }}>{title}</h2>
             </div>
           </div>
 

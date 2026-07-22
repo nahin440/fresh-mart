@@ -3,8 +3,8 @@ import ProductCard from '@/components/product/ProductCard';
 import Link from 'next/link';
 import { Sparkles, ArrowRight } from 'lucide-react';
 
-export default function NewArrivalsSection({ products = [] }) {
-  const list = products.filter(p => p.isNewArrival).slice(0, 4);
+export default function NewArrivalsSection({ products = [], limit = 4, title = 'New Arrivals' }) {
+  const list = products.filter(p => p.isNewArrival).slice(0, limit);
   if (!list.length) return null;
 
   return (
@@ -17,7 +17,7 @@ export default function NewArrivalsSection({ products = [] }) {
               <Sparkles size={15} style={{ color: 'var(--violet)' }} />
               <span className="eyebrow" style={{ marginBottom: 0 }}>Just Landed</span>
             </div>
-            <h2 className="t-h2">New Arrivals</h2>
+            <h2 className="t-h2">{title}</h2>
           </div>
           <Link href="/products?newArrival=true" className="btn btn-ghost" style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'var(--slate)' }}>
             See All <ArrowRight size={15} />
