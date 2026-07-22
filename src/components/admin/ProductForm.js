@@ -132,10 +132,11 @@ export default function ProductForm({ initial = {}, mode = 'add', productId }) {
     };
     try {
       const r = await fetch(mode === 'edit' ? `/api/products/${productId}` : '/api/products', { method: mode === 'edit' ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-      if (!r.ok) throw new Error();
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error || 'Could not save product');
       toast.success(mode === 'edit' ? 'Product updated!' : 'Product added!');
       router.push('/admin/goingintodeep/products');
-    } catch { toast.error('Could not save — check MongoDB is connected.'); }
+    } catch (err) { toast.error(err.message || 'Could not save product'); }
     setSaving(false);
   };
 

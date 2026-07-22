@@ -29,7 +29,9 @@ async function getProducts() {
       if (dbProds.length > 0)
         return dbProds.map(p => ({ ...p, id:p._id.toString(), _id:undefined }));
     }
-  } catch {}
+  } catch (err) {
+    console.error('[homepage] getProducts failed, falling back to demo data:', err.message);
+  }
   return productsData;
 }
 
@@ -43,7 +45,9 @@ async function getCategories() {
       if (dbCats.length > 0)
         return dbCats.map(c => ({ ...c, _id: c._id.toString() }));
     }
-  } catch {}
+  } catch (err) {
+    console.error('[homepage] getCategories failed, falling back to demo data:', err.message);
+  }
   return categoriesData;
 }
 
@@ -57,7 +61,9 @@ async function getTypes() {
       if (dbTypes.length > 0)
         return dbTypes.map(t => ({ ...t, _id: t._id.toString() }));
     }
-  } catch {}
+  } catch (err) {
+    console.error('[homepage] getTypes failed, falling back to demo data:', err.message);
+  }
   return typesData;
 }
 
@@ -71,7 +77,9 @@ async function getHomeSections() {
       if (sections.length > 0)
         return sections.map(s => ({ ...s, _id: s._id.toString() }));
     }
-  } catch {}
+  } catch (err) {
+    console.error('[homepage] getHomeSections failed, falling back to defaults:', err.message);
+  }
   return DEFAULT_HOME_SECTIONS;
 }
 

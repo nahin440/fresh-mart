@@ -56,6 +56,14 @@ export async function POST(request) {
     const product = await Product.create(data);
     return NextResponse.json({ product }, { status: 201 });
   } catch (e) {
+    if (e.code === 11000) {
+      const field = Object.keys(e.keyPattern || {})[0] || 'field';
+      return NextResponse.json({ error: `A product with that ${field} already exists` }, { status: 409 });
+    }
+    if (e.name === 'ValidationError') {
+      const firstError = Object.values(e.errors)[0]?.message || 'Invalid product data';
+      return NextResponse.json({ error: firstError }, { status: 400 });
+    }
     return NextResponse.json({ error: e.message }, { status: 500 });
   }
 }

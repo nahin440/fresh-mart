@@ -7,6 +7,7 @@ import { useWishlist } from '@/context/WishlistContext';
 import { ShoppingBag, Heart, Search, Menu, X, Leaf, ArrowRight } from 'lucide-react';
 
 const NAV = [
+  { label: 'All Products',  href: '/products' },
   { label: 'Fresh Produce', href: '/products?category=Fruits+%26+Vegetables' },
   { label: 'Dairy & Eggs',  href: '/products?category=Dairy+%26+Eggs' },
   { label: 'Bakery',        href: '/products?category=Bakery+%26+Bread' },
