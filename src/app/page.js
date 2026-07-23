@@ -25,7 +25,7 @@ async function getProducts() {
     const { Product }   = await import('@/lib/models');
     const db = await connectDB();
     if (db) {
-      const dbProds = await Product.find({ isActive:true }).lean();
+      const dbProds = await Product.find({ isActive: { $ne: false } }).lean();
       if (dbProds.length > 0)
         return dbProds.map(p => ({ ...p, id:p._id.toString(), _id:undefined }));
     }

@@ -178,6 +178,7 @@ function ProductsContent() {
     setLoading(true);
     try {
       const p = new URLSearchParams();
+      p.set('active', 'true');
       if (category !== 'All') p.set('category', category);
       if (type) p.set('type', type);
       p.set('sort', sort); p.set('maxPrice', maxPrice);

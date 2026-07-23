@@ -1,9 +1,0 @@
-[
-  { "id": "1", "name": "Fruits & Vegetables", "slug": "fruits-vegetables", "image": "https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=400&q=80", "description": "Fresh, seasonal produce sourced daily.", "isActive": true },
-  { "id": "2", "name": "Dairy & Eggs", "slug": "dairy-eggs", "image": "https://images.unsplash.com/photo-1543362906-acfc16c67564?w=400&q=80", "description": "Milk, cheese, yogurt and free-range eggs.", "isActive": true },
-  { "id": "3", "name": "Bakery & Bread", "slug": "bakery-bread", "image": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=400&q=80", "description": "Artisan breads and baked goods.", "isActive": true },
-  { "id": "4", "name": "Pantry & Dry Goods", "slug": "pantry-dry-goods", "image": "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400&q=80", "description": "Oils, grains, sweeteners and staples.", "isActive": true },
-  { "id": "5", "name": "Meat & Seafood", "slug": "meat-seafood", "image": "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=400&q=80", "description": "Responsibly sourced meat and fish.", "isActive": true },
-  { "id": "6", "name": "Beverages", "slug": "beverages", "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80", "description": "Coffee, tea, juices and health drinks.", "isActive": true },
-  { "id": "7", "name": "Snacks & Confectionery", "slug": "snacks-confectionery", "image": "https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=400&q=80", "description": "Sweet and savoury treats.", "isActive": true }
-]

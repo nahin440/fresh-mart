@@ -12,6 +12,11 @@ export async function GET(request) {
   const newArrival = searchParams.get('newArrival');
   const organic = searchParams.get('organic');
   const type = searchParams.get('type'); // generic type slug, e.g. "featured" — works for any admin-created type, not just the three legacy booleans above
+  // Filtering to active-only is opt-in, not the default — the admin product
+  // list needs to see every product (including any without isActive set,
+  // or explicitly deactivated ones) so nothing becomes invisible and
+  // unrecoverable. The storefront passes active=true explicitly.
+  const activeOnly = searchParams.get('active') === 'true';
   const minPrice = parseFloat(searchParams.get('minPrice') || '0');
   const maxPrice = parseFloat(searchParams.get('maxPrice') || '999');
 
@@ -19,7 +24,8 @@ export async function GET(request) {
     const db = await connectDB();
     let products;
     if (db) {
-      let query = { isActive: true };
+      let query = {};
+      if (activeOnly) query.isActive = { $ne: false }; // catches true AND missing/undefined, not just strictly-true
       if (category && category !== 'All') query.category = category;
       if (flashSale) query.isFlashSale = true;
       if (newArrival) query.isNewArrival = true;
@@ -30,6 +36,7 @@ export async function GET(request) {
       products = await Product.find(query).lean();
     } else {
       products = productsData;
+      if (activeOnly) products = products.filter(p => p.isActive !== false);
       if (category && category !== 'All') products = products.filter(p => p.category === category);
       if (flashSale) products = products.filter(p => p.isFlashSale);
       if (newArrival) products = products.filter(p => p.isNewArrival);
