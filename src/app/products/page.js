@@ -170,10 +170,12 @@ function ProductsContent() {
   }, [searchInput]);
 
   useEffect(() => {
-    fetch('/api/categories').then(r => r.json()).then(d => setCategories(d.categories || [])).catch(() => {});
-    fetch('/api/types').then(r => r.json()).then(d => setTypes(d.types || [])).catch(() => {});
+    fetch('/api/categories').then(r => r.json()).then(d => setCategories(d.categories || [])).catch(() => { });
+    fetch('/api/types').then(r => r.json()).then(d => setTypes(d.types || [])).catch(() => { });
   }, []);
 
+
+  
   const load = useCallback(async () => {
     setLoading(true);
     try {
@@ -189,9 +191,16 @@ function ProductsContent() {
       const r = await fetch(`/api/products?${p}`);
       const d = await r.json();
       setProducts((d.products || []).map(p => ({ ...p, id: (p.id || p._id)?.toString() })));
+      console.log(products)
     } catch { setProducts([]); }
     setLoading(false);
   }, [category, type, sort, search, filters, maxPrice]);
+
+  useEffect(() => {
+    fetch('/api/products').then(r => r.json())
+      .then(d => { setProducts((d.products || []).map(p => ({ ...p, id: (p.id || p._id)?.toString() }))); setProductsLoading(false); })
+      .catch(() => { setProducts(productsData); setProductsLoading(false); });
+  }, []);
 
   useEffect(() => { load(); }, [load]);
   useEffect(() => {
