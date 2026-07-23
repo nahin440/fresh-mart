@@ -1,39 +1,26 @@
 'use client';
 import dynamic from 'next/dynamic';
-import 'react-quill-new/dist/quill.snow.css';
+import '@uiw/react-md-editor/markdown-editor.css';
 
-// react-quill-new touches `document` on load, so it must never render on the
-// server. dynamic(..., { ssr: false }) is what makes that safe inside a Next
-// app router page — a plain top-level import would break the server build.
-const ReactQuill = dynamic(() => import('react-quill-new'), {
+// @uiw/react-md-editor touches `document` on load, same as any editor that
+// wraps a live textarea/CodeMirror instance, so it must never render on the
+// server — dynamic(..., { ssr: false }) is what makes that safe here.
+const MDEditor = dynamic(() => import('@uiw/react-md-editor'), {
   ssr: false,
   loading: () => (
-    <div style={{ height: 180, border: '1px solid var(--hairline)', borderRadius: 10, background: 'var(--canvas)' }} />
+    <div style={{ height: 200, border: '1px solid var(--hairline)', borderRadius: 10, background: 'var(--canvas)' }} />
   ),
 });
 
-const MODULES = {
-  toolbar: [
-    [{ header: [2, 3, false] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link'],
-    ['clean'],
-  ],
-};
-
-const FORMATS = ['header', 'bold', 'italic', 'underline', 'strike', 'list', 'link'];
-
 export default function DescriptionEditor({ value, onChange, placeholder }) {
   return (
-    <div className="quill-wrap">
-      <ReactQuill
-        theme="snow"
+    <div className="md-editor-wrap" data-color-mode="light">
+      <MDEditor
         value={value}
-        onChange={onChange}
-        modules={MODULES}
-        formats={FORMATS}
-        placeholder={placeholder}
+        onChange={(v) => onChange(v || '')}
+        height={200}
+        preview="edit"
+        textareaProps={{ placeholder }}
       />
     </div>
   );

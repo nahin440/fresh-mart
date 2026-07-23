@@ -457,30 +457,22 @@ button { font-family: inherit; cursor: pointer; }
 .scroll-area::-webkit-scrollbar { width: 3px; }
 .scroll-area::-webkit-scrollbar-thumb { background: var(--hairline); }
 
-/* ─── QUILL EDITOR (admin description field) ─── */
-.quill-wrap .ql-toolbar.ql-snow {
-  border: 1.5px solid var(--hairline); border-bottom: none;
-  border-radius: 12px 12px 0 0; background: var(--canvas); padding: 0.625rem 0.75rem;
+/* ─── MARKDOWN EDITOR (admin description field) ─── */
+.md-editor-wrap .w-md-editor {
+  border: 1.5px solid var(--hairline); border-radius: 12px;
+  font-family: inherit; box-shadow: none; background: #fff;
 }
-.quill-wrap .ql-container.ql-snow {
-  border: 1.5px solid var(--hairline); border-radius: 0 0 12px 12px;
-  font-family: inherit; font-size: 0.9375rem; background: #fff;
+.md-editor-wrap .w-md-editor-toolbar {
+  border-bottom: 1px solid var(--hairline); background: var(--canvas);
+  border-radius: 12px 12px 0 0;
 }
-.quill-wrap .ql-editor { min-height: 160px; line-height: 1.7; color: var(--ink); }
-.quill-wrap .ql-editor.ql-blank::before { color: var(--muted); font-style: normal; }
-.quill-wrap .ql-snow .ql-stroke { stroke: var(--slate); }
-.quill-wrap .ql-snow .ql-fill { fill: var(--slate); }
-.quill-wrap .ql-snow .ql-picker { color: var(--slate); }
-.quill-wrap .ql-snow.ql-toolbar button:hover .ql-stroke,
-.quill-wrap .ql-snow.ql-toolbar button.ql-active .ql-stroke { stroke: var(--violet); }
-.quill-wrap .ql-snow.ql-toolbar button:hover .ql-fill,
-.quill-wrap .ql-snow.ql-toolbar button.ql-active .ql-fill { fill: var(--violet); }
-.quill-wrap .ql-snow.ql-toolbar button.ql-active,
-.quill-wrap .ql-snow .ql-picker-label.ql-active { color: var(--violet); }
-.quill-wrap:focus-within .ql-toolbar.ql-snow,
-.quill-wrap:focus-within .ql-container.ql-snow { border-color: var(--violet); }
+.md-editor-wrap .w-md-editor-text-input,
+.md-editor-wrap .w-md-editor-text-pre > code,
+.md-editor-wrap .w-md-editor-text { font-family: inherit !important; font-size: 0.9375rem !important; }
+.md-editor-wrap .w-md-editor:focus-within { border-color: var(--violet); }
+.md-editor-wrap .w-md-editor-toolbar li > button:hover { color: var(--violet) !important; }
 
-/* Rendered product description on the storefront (Quill outputs HTML) */
+/* Rendered product description on the storefront (react-markdown output) */
 .prose-content p { margin-bottom: 0.75em; }
 .prose-content ul, .prose-content ol { margin: 0.5em 0 0.75em 1.25em; }
 .prose-content a { color: var(--violet); text-decoration: underline; }

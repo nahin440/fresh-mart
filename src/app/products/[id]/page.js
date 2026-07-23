@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { ShoppingBag, Heart, Star, Leaf, Truck, Shield, Minus, Plus, ChevronRight, Check, Zap, ArrowRight, Package } from 'lucide-react';
 import Link from 'next/link';
+import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import ProductCard from '@/components/product/ProductCard';
@@ -202,7 +204,11 @@ export default function ProductDetailPage() {
             ))}
           </div>
           <div className="afi" key={tab} style={{ maxWidth:680 }}>
-            {tab==='description' && <div className="t-body prose-content" style={{ fontSize:'clamp(0.9375rem,2vw,1.0625rem)',lineHeight:1.8 }} dangerouslySetInnerHTML={{ __html: product.description || '' }}/>}
+            {tab==='description' && (
+              <div className="t-body prose-content" style={{ fontSize:'clamp(0.9375rem,2vw,1.0625rem)',lineHeight:1.8 }}>
+                <Markdown remarkPlugins={[remarkGfm]}>{product.description || ''}</Markdown>
+              </div>
+            )}
             {tab==='highlights' && (
               <ul style={{ display:'flex',flexDirection:'column',gap:'0.875rem',listStyle:'none' }}>
                 {product.highlights?.map((h,i)=>(
