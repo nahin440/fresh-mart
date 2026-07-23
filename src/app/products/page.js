@@ -136,7 +136,7 @@ function SidebarNav({ categories, types, category, setCat, onNavigate }) {
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
             {types.map(t => (
-              <Link key={t.slug || t._id} href={`/products?type=${t.slug}`} onClick={() => onNavigate?.()} className="chip">
+              <Link key={t.slug || t._id} href={`/productsData?type=${t.slug}`} onClick={() => onNavigate?.()} className="chip">
                 {t.name}
               </Link>
             ))}
@@ -149,7 +149,7 @@ function SidebarNav({ categories, types, category, setCat, onNavigate }) {
 
 function ProductsContent() {
   const sp = useSearchParams();
-  const [products, setProducts] = useState([]);
+  const [productsData, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [category, setCat] = useState(sp.get('category') || 'All');
   const [type, setType] = useState(sp.get('type') || '');
@@ -188,17 +188,17 @@ function ProductsContent() {
       if (filters.organic) p.set('organic', 'true');
       if (filters.flashSale) p.set('flashSale', 'true');
       if (filters.newArrival) p.set('newArrival', 'true');
-      const r = await fetch(`/api/products?${p}`);
+      const r = await fetch(`/api/productsData?${p}`);
       const d = await r.json();
-      setProducts((d.products || []).map(p => ({ ...p, id: (p.id || p._id)?.toString() })));
-      console.log(products)
+      setProducts((d.productsData || []).map(p => ({ ...p, id: (p.id || p._id)?.toString() })));
+      console.log(productsData)
     } catch { setProducts([]); }
     setLoading(false);
   }, [category, type, sort, search, filters, maxPrice]);
 
   useEffect(() => {
-    fetch('/api/products').then(r => r.json())
-      .then(d => { setProducts((d.products || []).map(p => ({ ...p, id: (p.id || p._id)?.toString() }))); setProductsLoading(false); })
+    fetch('/api/productsData').then(r => r.json())
+      .then(d => { setProducts((d.productsData || []).map(p => ({ ...p, id: (p.id || p._id)?.toString() }))); setProductsLoading(false); })
       .catch(() => { setProducts(productsData); setProductsLoading(false); });
   }, []);
 
@@ -278,22 +278,22 @@ function ProductsContent() {
           {/* Main */}
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <span style={{ fontSize: '0.875rem', color: 'var(--slate)' }}>{loading ? 'Loading…' : `${products.length} products`}</span>
+              <span style={{ fontSize: '0.875rem', color: 'var(--slate)' }}>{loading ? 'Loading…' : `${productsData.length} productsData`}</span>
               {activeCount > 0 && <button onClick={clearAll} style={{ fontSize: '0.8125rem', color: 'var(--violet)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', fontFamily: 'inherit' }}>Clear filters</button>}
             </div>
 
             {loading ? (
               <div className="product-grid">{Array.from({ length: 8 }).map((_, i) => <Skel key={i} />)}</div>
-            ) : products.length === 0 ? (
+            ) : productsData.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '5rem 1rem' }}>
                 <Search size={40} style={{ color: 'var(--muted)', marginBottom: '1rem' }} />
-                <h3 className="t-h3" style={{ marginBottom: '0.625rem' }}>No products found</h3>
+                <h3 className="t-h3" style={{ marginBottom: '0.625rem' }}>No productsData found</h3>
                 <p className="t-body" style={{ marginBottom: '1.5rem' }}>Try adjusting your filters or search terms.</p>
                 <button onClick={clearAll} className="btn btn-primary">Clear All Filters</button>
               </div>
             ) : (
               <div className="product-grid">
-                {products.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
+                {productsData.map((p, i) => <ProductCard key={p.id} product={p} index={i} />)}
               </div>
             )}
           </div>
