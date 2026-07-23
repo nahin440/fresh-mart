@@ -30,7 +30,17 @@ export default function ProductDetailPage() {
         const d = await r.json();
         const p = { ...d.product, id: (d.product.id || d.product._id)?.toString() };
         setProduct(p);
-        setRelated(productsData.filter(r => r.category === p.category && r.id !== p.id).slice(0, 4));
+        try {
+          const rr = await fetch(`/api/products?category=${encodeURIComponent(p.category)}&active=true`);
+          const dd = await rr.json();
+          const rel = (dd.products || [])
+            .map(x => ({ ...x, id: (x.id || x._id)?.toString() }))
+            .filter(x => x.id !== p.id)
+            .slice(0, 4);
+          setRelated(rel);
+        } catch {
+          setRelated(productsData.filter(r => r.category === p.category && r.id !== p.id).slice(0, 4));
+        }
       } catch {
         const p = productsData.find(p => p.id === id || p.slug === id);
         setProduct(p || null);

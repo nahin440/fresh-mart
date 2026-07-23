@@ -6,21 +6,29 @@ import productsData from '@/lib/products.json';
 
 export default function AdminDashboard() {
   const [orders, setOrders] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [productsLoading, setProductsLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/orders').then(r=>r.json()).then(d=>{setOrders(d.orders||[]);setLoading(false);}).catch(()=>setLoading(false));
   }, []);
 
+  useEffect(() => {
+    fetch('/api/products').then(r=>r.json())
+      .then(d=>{setProducts((d.products||[]).map(p=>({...p,id:(p.id||p._id)?.toString()})));setProductsLoading(false);})
+      .catch(()=>{setProducts(productsData);setProductsLoading(false);});
+  }, []);
+
   const revenue  = orders.reduce((s,o)=>s+(o.total||0),0);
   const pending  = orders.filter(o=>o.status==='pending').length;
-  const lowStock = productsData.filter(p=>p.stock<15).length;
-  const avgRat   = (productsData.reduce((s,p)=>s+p.rating,0)/productsData.length).toFixed(1);
+  const lowStock = products.filter(p=>p.stock<15).length;
+  const avgRat   = products.length ? (products.reduce((s,p)=>s+(p.rating||0),0)/products.length).toFixed(1) : '0.0';
 
   const STATUS_C = { pending:{bg:'#fef3c7',c:'#92400e'}, confirmed:{bg:'#dbeafe',c:'#1e40af'}, preparing:{bg:'#ede9fe',c:'#7c3aed'}, dispatched:{bg:'#d1fae5',c:'#065f46'}, delivered:{bg:'#d1fae5',c:'#059669'}, cancelled:{bg:'#fee2e2',c:'#991b1b'} };
 
   const STATS = [
-    { label:'Total Products', value:productsData.length, icon:Package,      color:'#5433eb', bg:'rgba(84,51,235,0.1)',  sub:`${lowStock} low stock` },
+    { label:'Total Products', value:productsLoading?'—':products.length, icon:Package,      color:'#5433eb', bg:'rgba(84,51,235,0.1)',  sub:`${lowStock} low stock` },
     { label:'Total Orders',   value:orders.length,        icon:ShoppingCart, color:'#3b82f6', bg:'rgba(59,130,246,0.1)', sub:`${pending} pending` },
     { label:'Revenue',        value:`£${revenue.toFixed(2)}`, icon:TrendingUp, color:'#10b981', bg:'rgba(16,185,129,0.1)', sub:'All time' },
     { label:'Avg Rating',     value:avgRat,               icon:Star,         color:'#f59e0b', bg:'rgba(245,158,11,0.1)', sub:'All products' },
@@ -91,19 +99,25 @@ export default function AdminDashboard() {
             <Link href="/admin/goingintodeep/products" style={{ fontSize:'0.8125rem',color:'var(--violet)',textDecoration:'none',fontWeight:600 }}>Manage →</Link>
           </div>
           <div>
-            {[...productsData].sort((a,b)=>b.reviews-a.reviews).slice(0,5).map((p,i)=>(
-              <div key={p.id} style={{ display:'flex',alignItems:'center',gap:'0.75rem',padding:'0.75rem 0',borderBottom:'1px solid var(--hairline)' }}>
-                <span style={{ fontSize:'0.75rem',color:'var(--muted)',width:16,textAlign:'center',flexShrink:0 }}>{i+1}</span>
-                <div style={{ width:38,height:38,borderRadius:10,overflow:'hidden',background:'var(--canvas)',flexShrink:0 }}>
-                  <img src={p.image} alt={p.name} style={{width:'100%',height:'100%',objectFit:'cover'}} loading="lazy"/>
+            {productsLoading ? (
+              [...Array(5)].map((_,i)=><div key={i} className="skeleton" style={{height:52,borderRadius:10,marginBottom:'0.75rem'}}/>)
+            ) : products.length===0 ? (
+              <div style={{ textAlign:'center',padding:'2rem 0',color:'var(--muted)',fontSize:'0.875rem' }}>No products yet</div>
+            ) : (
+              [...products].sort((a,b)=>(b.reviews||0)-(a.reviews||0)).slice(0,5).map((p,i)=>(
+                <div key={p.id} style={{ display:'flex',alignItems:'center',gap:'0.75rem',padding:'0.75rem 0',borderBottom:'1px solid var(--hairline)' }}>
+                  <span style={{ fontSize:'0.75rem',color:'var(--muted)',width:16,textAlign:'center',flexShrink:0 }}>{i+1}</span>
+                  <div style={{ width:38,height:38,borderRadius:10,overflow:'hidden',background:'var(--canvas)',flexShrink:0 }}>
+                    <img src={p.image} alt={p.name} style={{width:'100%',height:'100%',objectFit:'cover'}} loading="lazy"/>
+                  </div>
+                  <div style={{ flex:1,minWidth:0 }}>
+                    <p style={{ fontSize:'0.875rem',fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{p.name}</p>
+                    <p style={{ fontSize:'0.75rem',color:'var(--slate)' }}>{p.reviews||0} reviews · ★{p.rating||0}</p>
+                  </div>
+                  <span style={{ fontWeight:800,fontSize:'0.9375rem',flexShrink:0 }}>£{p.price.toFixed(2)}</span>
                 </div>
-                <div style={{ flex:1,minWidth:0 }}>
-                  <p style={{ fontSize:'0.875rem',fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{p.name}</p>
-                  <p style={{ fontSize:'0.75rem',color:'var(--slate)' }}>{p.reviews} reviews · ★{p.rating}</p>
-                </div>
-                <span style={{ fontWeight:800,fontSize:'0.9375rem',flexShrink:0 }}>£{p.price.toFixed(2)}</span>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>

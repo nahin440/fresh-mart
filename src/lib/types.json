@@ -1,0 +1,7 @@
+[
+  { "id": "1", "name": "Flash Sale", "slug": "flash-sale", "description": "Time-limited discounted deals.", "image": "https://images.unsplash.com/photo-1607083206869-4c7672e72a8a?w=500&q=80", "color": "red", "isActive": true },
+  { "id": "2", "name": "New Arrivals", "slug": "new-arrivals", "description": "Recently added to the catalogue.", "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=80", "color": "violet", "isActive": true },
+  { "id": "3", "name": "Featured", "slug": "featured", "description": "Hand-picked highlights.", "image": "https://images.unsplash.com/photo-1490818387583-1baba5e638af?w=500&q=80", "color": "violet", "isActive": true },
+  { "id": "4", "name": "Best Seller", "slug": "best-seller", "description": "Our most popular products.", "image": "https://images.unsplash.com/photo-1573246123716-6b1782bfc499?w=500&q=80", "color": "dark", "isActive": true },
+  { "id": "5", "name": "Organic", "slug": "organic", "description": "Certified organic produce.", "image": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=80", "color": "green", "isActive": true }
+]
