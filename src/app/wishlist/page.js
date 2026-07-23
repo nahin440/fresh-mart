@@ -54,7 +54,7 @@ export default function WishlistPage() {
                     <Link href={`/products/${product.id}`}>
                       <h3 className="t-h3" style={{ marginBottom:'0.375rem',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden' }}>{product.name}</h3>
                     </Link>
-                    <p style={{ fontSize:'1.125rem',fontWeight:800,letterSpacing:'-0.025em',marginBottom:'0.875rem' }}>£{product.price.toFixed(2)}</p>
+                    <p style={{ fontSize:'1.125rem',fontWeight:800,letterSpacing:'-0.025em',marginBottom:'0.875rem' }}>৳{product.price.toFixed(2)}</p>
                     <button onClick={()=>addToCart(product)} className="btn btn-primary btn-sm" style={{ width:'100%',justifyContent:'center' }}>
                       <ShoppingBag size={14}/> Add to Cart
                     </button>

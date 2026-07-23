@@ -57,7 +57,7 @@ export default function Header() {
       <div style={{ background: 'var(--near-black)', height: 36, overflow: 'hidden' }}>
         <div className="marquee-wrap" style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
           <div className="marquee-track" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.6875rem', letterSpacing: '0.08em' }}>
-            {Array(6).fill(['🌿 Certified Organic', '🚚 Free Delivery £50+', '⚡ Same-Day by 2pm', '🌍 Plastic-Free Packaging', '⭐ 50,000+ Happy Customers', '♻️ Carbon Neutral Delivery']).flat().map((t, i) => (
+            {Array(6).fill(['🌿 Certified Organic', '🚚 Free Delivery ৳50+', '⚡ Same-Day by 2pm', '🌍 Plastic-Free Packaging', '⭐ 50,000+ Happy Customers', '♻️ Carbon Neutral Delivery']).flat().map((t, i) => (
               <span key={i} style={{ marginRight: '4rem' }}>{t}</span>
             ))}
           </div>

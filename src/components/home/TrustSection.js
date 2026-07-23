@@ -3,7 +3,7 @@ import { Leaf, Truck, RefreshCw, Shield, Award, Clock } from 'lucide-react';
 
 const FEATURES = [
   { icon: Leaf,      title: 'Certified Organic',    desc: 'Every product certified to strict organic standards from verified farms worldwide.' },
-  { icon: Truck,     title: 'Free Delivery',         desc: 'Complimentary next-day delivery on all orders over £50 anywhere in the UK.' },
+  { icon: Truck,     title: 'Free Delivery',         desc: 'Complimentary next-day delivery on all orders over ৳50 anywhere in the UK.' },
   { icon: Clock,     title: 'Same-Day by 2pm',       desc: 'Order before 2pm for same-day delivery. We never keep you waiting.' },
   { icon: Shield,    title: 'Freshness Guarantee',   desc: '100% freshness guarantee on everything we sell — or your money back, instantly.' },
   { icon: RefreshCw, title: 'Easy Returns',          desc: 'Not happy? Return anything within 24 hours. No questions, no hassle.' },

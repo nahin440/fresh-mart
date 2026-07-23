@@ -149,7 +149,7 @@ export default function CheckoutPage() {
                           <p style={{ fontWeight:600,fontSize:'0.9375rem',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginBottom:'0.125rem' }}>{item.name}</p>
                           <p style={{ fontSize:'0.8125rem',color:'var(--slate)' }}>Qty: {item.quantity}</p>
                         </div>
-                        <span style={{ fontWeight:800,fontSize:'1rem',flexShrink:0 }}>£{(item.price*item.quantity).toFixed(2)}</span>
+                        <span style={{ fontWeight:800,fontSize:'1rem',flexShrink:0 }}>৳{(item.price*item.quantity).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
@@ -186,18 +186,18 @@ export default function CheckoutPage() {
                 {items.map(i=>(
                   <div key={i.id} style={{ display:'flex',justifyContent:'space-between',fontSize:'0.875rem',marginBottom:'0.5rem' }}>
                     <span style={{ color:'var(--slate)',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginRight:'0.75rem' }}>{i.name} ×{i.quantity}</span>
-                    <span style={{ fontWeight:600,flexShrink:0 }}>£{(i.price*i.quantity).toFixed(2)}</span>
+                    <span style={{ fontWeight:600,flexShrink:0 }}>৳{(i.price*i.quantity).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
-              {[['Subtotal',`£${total.toFixed(2)}`],['Delivery',fee===0?'Free':`£${fee.toFixed(2)}`]].map(([l,v])=>(
+              {[['Subtotal',`৳${total.toFixed(2)}`],['Delivery',fee===0?'Free':`৳${fee.toFixed(2)}`]].map(([l,v])=>(
                 <div key={l} style={{ display:'flex',justifyContent:'space-between',fontSize:'0.9375rem',marginBottom:'0.625rem' }}>
                   <span style={{color:'var(--slate)'}}>{l}</span>
                   <span style={{fontWeight:600,color:fee===0&&l==='Delivery'?'var(--green)':'var(--ink)'}}>{v}</span>
                 </div>
               ))}
               <div style={{ display:'flex',justifyContent:'space-between',fontSize:'1.125rem',fontWeight:900,letterSpacing:'-0.025em',paddingTop:'0.875rem',borderTop:'1px solid var(--hairline)',marginTop:'0.25rem' }}>
-                <span>Total</span><span>£{(total+fee).toFixed(2)}</span>
+                <span>Total</span><span>৳{(total+fee).toFixed(2)}</span>
               </div>
             </div>
           </div>

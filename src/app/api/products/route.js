@@ -17,8 +17,18 @@ export async function GET(request) {
   // or explicitly deactivated ones) so nothing becomes invisible and
   // unrecoverable. The storefront passes active=true explicitly.
   const activeOnly = searchParams.get('active') === 'true';
-  const minPrice = parseFloat(searchParams.get('minPrice') || '0');
-  const maxPrice = parseFloat(searchParams.get('maxPrice') || '999');
+  // Like activeOnly above, the price range is opt-in — only applied when the
+  // caller actually passes minPrice/maxPrice. Previously maxPrice defaulted
+  // to 999 even when no price filter was requested, which silently dropped
+  // any product priced above that from EVERY /api/products call (admin
+  // pages happened to stay under it with demo data, but the public
+  // storefront was one hardcoded default away from hiding real inventory —
+  // especially once prices are in BDT, where everyday grocery prices
+  // routinely exceed 999).
+  const minPriceParam = searchParams.get('minPrice');
+  const maxPriceParam = searchParams.get('maxPrice');
+  const minPrice = minPriceParam !== null ? parseFloat(minPriceParam) : null;
+  const maxPrice = maxPriceParam !== null ? parseFloat(maxPriceParam) : null;
 
   try {
     const db = await connectDB();
@@ -32,7 +42,11 @@ export async function GET(request) {
       if (organic) query.isOrganic = true;
       if (type) query.types = type;
       if (search) query.$or = [{ name: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }];
-      query.price = { $gte: minPrice, $lte: maxPrice };
+      if (minPrice !== null || maxPrice !== null) {
+        query.price = {};
+        if (minPrice !== null) query.price.$gte = minPrice;
+        if (maxPrice !== null) query.price.$lte = maxPrice;
+      }
       products = await Product.find(query).lean();
     } else {
       products = productsData;
@@ -43,7 +57,8 @@ export async function GET(request) {
       if (organic) products = products.filter(p => p.isOrganic);
       if (type) products = products.filter(p => Array.isArray(p.types) && p.types.includes(type));
       if (search) products = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.category.toLowerCase().includes(search.toLowerCase()));
-      products = products.filter(p => p.price >= minPrice && p.price <= maxPrice);
+      if (minPrice !== null) products = products.filter(p => p.price >= minPrice);
+      if (maxPrice !== null) products = products.filter(p => p.price <= maxPrice);
     }
     if (sort === 'price-asc') products.sort((a, b) => a.price - b.price);
     if (sort === 'price-desc') products.sort((a, b) => b.price - a.price);

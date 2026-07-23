@@ -38,7 +38,7 @@ export default function CartDrawer() {
             ) : (
               <>
                 <p style={{ fontSize: '0.8125rem', color: 'var(--slate)', marginBottom: '0.5rem' }}>
-                  Add <strong style={{ color: 'var(--ink)' }}>£{(50 - total).toFixed(2)}</strong> more for free delivery
+                  Add <strong style={{ color: 'var(--ink)' }}>৳{(50 - total).toFixed(2)}</strong> more for free delivery
                 </p>
                 <div className="progress">
                   <div className="progress-fill" style={{ width: `${progress}%` }} />
@@ -92,7 +92,7 @@ export default function CartDrawer() {
                         </button>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
-                        <span style={{ fontWeight: 700, fontSize: '0.9375rem' }}>£{(item.price * item.quantity).toFixed(2)}</span>
+                        <span style={{ fontWeight: 700, fontSize: '0.9375rem' }}>৳{(item.price * item.quantity).toFixed(2)}</span>
                         <button onClick={() => removeFromCart(item.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', transition: 'color 0.15s' }}
                           onMouseEnter={e => e.currentTarget.style.color = '#e74c3c'}
                           onMouseLeave={e => e.currentTarget.style.color = 'var(--muted)'}>
@@ -111,7 +111,7 @@ export default function CartDrawer() {
         {count > 0 && (
           <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid var(--hairline)', flexShrink: 0, background: '#fff' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.125rem' }}>
-              {[['Subtotal', `£${total.toFixed(2)}`], ['Delivery', deliveryFee === 0 ? '🎉 Free' : `£${deliveryFee.toFixed(2)}`]].map(([l, v]) => (
+              {[['Subtotal', `৳${total.toFixed(2)}`], ['Delivery', deliveryFee === 0 ? '🎉 Free' : `৳${deliveryFee.toFixed(2)}`]].map(([l, v]) => (
                 <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
                   <span style={{ color: 'var(--slate)' }}>{l}</span>
                   <span style={{ fontWeight: 600, color: deliveryFee === 0 && l === 'Delivery' ? 'var(--green)' : 'var(--ink)' }}>{v}</span>
@@ -119,7 +119,7 @@ export default function CartDrawer() {
               ))}
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.0625rem', fontWeight: 800, letterSpacing: '-0.025em', paddingTop: '0.75rem', borderTop: '1px solid var(--hairline)' }}>
                 <span>Total</span>
-                <span>£{(total + deliveryFee).toFixed(2)}</span>
+                <span>৳{(total + deliveryFee).toFixed(2)}</span>
               </div>
             </div>
             <Link href="/checkout" onClick={() => setIsOpen(false)} className="btn btn-primary"

@@ -49,9 +49,9 @@ export default function CartPage() {
                           onMouseLeave={e=>e.target.style.color='var(--ink)'}>
                           {item.name}
                         </Link>
-                        <span style={{ fontWeight:800,fontSize:'clamp(1rem,2.5vw,1.125rem)',letterSpacing:'-0.025em',flexShrink:0 }}>£{(item.price*item.quantity).toFixed(2)}</span>
+                        <span style={{ fontWeight:800,fontSize:'clamp(1rem,2.5vw,1.125rem)',letterSpacing:'-0.025em',flexShrink:0 }}>৳{(item.price*item.quantity).toFixed(2)}</span>
                       </div>
-                      <p style={{ fontSize:'0.8125rem',color:'var(--muted)',marginBottom:'0.875rem' }}>{item.unit} · £{item.price.toFixed(2)} each</p>
+                      <p style={{ fontSize:'0.8125rem',color:'var(--muted)',marginBottom:'0.875rem' }}>{item.unit} · ৳{item.price.toFixed(2)} each</p>
                       <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'0.5rem' }}>
                         <div className="qty-ctrl" style={{ border:'1.5px solid var(--hairline)' }}>
                           <button className="qty-btn" onClick={()=>updateQuantity(item.id,item.quantity-1)} disabled={item.quantity<=1} style={{opacity:item.quantity<=1?0.3:1}}><Minus size={13}/></button>
@@ -86,7 +86,7 @@ export default function CartPage() {
                 {total < 50 && (
                   <div style={{ background:'var(--canvas)',borderRadius:12,padding:'1rem',marginBottom:'1.25rem' }}>
                     <p style={{ fontSize:'0.8125rem',color:'var(--slate)',marginBottom:'0.5rem' }}>
-                      Add <strong style={{color:'var(--ink)'}}>£{(50-total).toFixed(2)}</strong> for free delivery
+                      Add <strong style={{color:'var(--ink)'}}>৳{(50-total).toFixed(2)}</strong> for free delivery
                     </p>
                     <div className="progress">
                       <div className="progress-fill" style={{width:`${progress}%`}}/>
@@ -95,14 +95,14 @@ export default function CartPage() {
                 )}
 
                 <div style={{ display:'flex',flexDirection:'column',gap:'0.625rem',marginBottom:'1.25rem' }}>
-                  {[['Subtotal',`£${total.toFixed(2)}`],['Delivery',fee===0?'🎉 Free':`£${fee.toFixed(2)}`]].map(([l,v])=>(
+                  {[['Subtotal',`৳${total.toFixed(2)}`],['Delivery',fee===0?'🎉 Free':`৳${fee.toFixed(2)}`]].map(([l,v])=>(
                     <div key={l} style={{ display:'flex',justifyContent:'space-between',fontSize:'0.9375rem' }}>
                       <span style={{color:'var(--slate)'}}>{l}</span>
                       <span style={{fontWeight:600,color:fee===0&&l==='Delivery'?'var(--green)':'var(--ink)'}}>{v}</span>
                     </div>
                   ))}
                   <div style={{ display:'flex',justifyContent:'space-between',fontSize:'clamp(1.125rem,3vw,1.25rem)',fontWeight:900,letterSpacing:'-0.03em',paddingTop:'0.875rem',borderTop:'1px solid var(--hairline)',marginTop:'0.25rem' }}>
-                    <span>Total</span><span>£{(total+fee).toFixed(2)}</span>
+                    <span>Total</span><span>৳{(total+fee).toFixed(2)}</span>
                   </div>
                 </div>
                 <Link href="/checkout" className="btn btn-primary btn-lg" style={{ width:'100%',justifyContent:'center',display:'flex' }}>

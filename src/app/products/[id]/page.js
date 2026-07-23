@@ -144,12 +144,12 @@ export default function ProductDetailPage() {
 
             {/* Price */}
             <div style={{ marginBottom:'1rem' }}>
-              <span style={{ fontSize:'clamp(2rem,5vw,2.5rem)',fontWeight:900,letterSpacing:'-0.04em' }}>£{product.price.toFixed(2)}</span>
+              <span style={{ fontSize:'clamp(2rem,5vw,2.5rem)',fontWeight:900,letterSpacing:'-0.04em' }}>৳{product.price.toFixed(2)}</span>
               {product.originalPrice && (
                 <>
-                  <span style={{ fontSize:'1.25rem',color:'var(--muted)',textDecoration:'line-through',marginLeft:'0.75rem' }}>£{product.originalPrice.toFixed(2)}</span>
+                  <span style={{ fontSize:'1.25rem',color:'var(--muted)',textDecoration:'line-through',marginLeft:'0.75rem' }}>৳{product.originalPrice.toFixed(2)}</span>
                   <span className="tag tag-red" style={{ marginLeft:'0.625rem',verticalAlign:'middle' }}>
-                    Save £{(product.originalPrice-product.price).toFixed(2)}
+                    Save ৳{(product.originalPrice-product.price).toFixed(2)}
                   </span>
                 </>
               )}
@@ -193,7 +193,7 @@ export default function ProductDetailPage() {
 
             {/* Trust strip */}
             <div style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'0.625rem',marginTop:'1.5rem' }}>
-              {[{icon:Truck,t:'Free £50+'},{icon:Shield,t:'Freshness Guar.'},{icon:Leaf,t:'Organic'}].map(({icon:Icon,t})=>(
+              {[{icon:Truck,t:'Free ৳50+'},{icon:Shield,t:'Freshness Guar.'},{icon:Leaf,t:'Organic'}].map(({icon:Icon,t})=>(
                 <div key={t} style={{ background:'var(--off-white)',borderRadius:12,padding:'0.75rem 0.5rem',textAlign:'center',border:'1px solid var(--hairline)' }}>
                   <Icon size={16} style={{color:'var(--violet)',marginBottom:5}}/>
                   <p style={{ fontSize:'0.6875rem',color:'var(--slate)',letterSpacing:'-0.01em' }}>{t}</p>

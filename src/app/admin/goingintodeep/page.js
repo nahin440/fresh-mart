@@ -30,7 +30,7 @@ export default function AdminDashboard() {
   const STATS = [
     { label:'Total Products', value:productsLoading?'—':products.length, icon:Package,      color:'#5433eb', bg:'rgba(84,51,235,0.1)',  sub:`${lowStock} low stock` },
     { label:'Total Orders',   value:orders.length,        icon:ShoppingCart, color:'#3b82f6', bg:'rgba(59,130,246,0.1)', sub:`${pending} pending` },
-    { label:'Revenue',        value:`£${revenue.toFixed(2)}`, icon:TrendingUp, color:'#10b981', bg:'rgba(16,185,129,0.1)', sub:'All time' },
+    { label:'Revenue',        value:`৳${revenue.toFixed(2)}`, icon:TrendingUp, color:'#10b981', bg:'rgba(16,185,129,0.1)', sub:'All time' },
     { label:'Avg Rating',     value:avgRat,               icon:Star,         color:'#f59e0b', bg:'rgba(245,158,11,0.1)', sub:'All products' },
   ];
 
@@ -83,7 +83,7 @@ export default function AdminDashboard() {
                     </div>
                     <div style={{ display:'flex',alignItems:'center',gap:'0.75rem' }}>
                       <span style={{ fontSize:'0.6875rem',padding:'3px 9px',borderRadius:99,background:s.bg,color:s.c,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.04em' }}>{o.status}</span>
-                      <span style={{ fontWeight:800,fontSize:'0.9375rem' }}>£{o.total?.toFixed(2)}</span>
+                      <span style={{ fontWeight:800,fontSize:'0.9375rem' }}>৳{o.total?.toFixed(2)}</span>
                     </div>
                   </div>
                 );
@@ -114,7 +114,7 @@ export default function AdminDashboard() {
                     <p style={{ fontSize:'0.875rem',fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{p.name}</p>
                     <p style={{ fontSize:'0.75rem',color:'var(--slate)' }}>{p.reviews||0} reviews · ★{p.rating||0}</p>
                   </div>
-                  <span style={{ fontWeight:800,fontSize:'0.9375rem',flexShrink:0 }}>£{p.price.toFixed(2)}</span>
+                  <span style={{ fontWeight:800,fontSize:'0.9375rem',flexShrink:0 }}>৳{p.price.toFixed(2)}</span>
                 </div>
               ))
             )}

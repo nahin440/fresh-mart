@@ -167,8 +167,8 @@ export default function ProductForm({ initial = {}, mode = 'add', productId }) {
 
       <Card title="Pricing & Inventory">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem' }}>
-          <Field form={form} set={set} label="Sale Price (£)" k="price" type="number" req ph="4.99" half />
-          <Field form={form} set={set} label="Original Price (£)" k="originalPrice" type="number" ph="6.99" half />
+          <Field form={form} set={set} label="Sale Price (৳)" k="price" type="number" req ph="4.99" half />
+          <Field form={form} set={set} label="Original Price (৳)" k="originalPrice" type="number" ph="6.99" half />
           <Field form={form} set={set} label="Discount %" k="discount" type="number" ph="29" half />
           <Field form={form} set={set} label="Stock Qty" k="stock" type="number" ph="50" half />
         </div>

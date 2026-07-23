@@ -68,10 +68,10 @@ export default function ProductCard({ product, index = 0 }) {
         {/* Price row */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.25rem' }}>
           <div>
-            <span className="t-price">£{product.price.toFixed(2)}</span>
+            <span className="t-price">৳{product.price.toFixed(2)}</span>
             {product.originalPrice && (
               <span style={{ fontSize: '0.75rem', color: 'var(--muted)', textDecoration: 'line-through', marginLeft: '0.375rem' }}>
-                £{product.originalPrice.toFixed(2)}
+                ৳{product.originalPrice.toFixed(2)}
               </span>
             )}
           </div>

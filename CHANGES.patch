@@ -1,0 +1,458 @@
+diff --git a/src/app/admin/goingintodeep/orders/page.js b/src/app/admin/goingintodeep/orders/page.js
+index e95df2f..c4a6614 100644
+--- a/src/app/admin/goingintodeep/orders/page.js
++++ b/src/app/admin/goingintodeep/orders/page.js
+@@ -87,7 +87,7 @@ export default function AdminOrdersPage() {
+                     <p style={{ fontSize:'0.6875rem',color:'var(--muted)' }}>items</p>
+                   </div>
+                   <div style={{ textAlign:'right',flexShrink:0 }}>
+-                    <p style={{ fontWeight:900,fontSize:'1.125rem',letterSpacing:'-0.025em' }}>£{order.total?.toFixed(2)}</p>
++                    <p style={{ fontWeight:900,fontSize:'1.125rem',letterSpacing:'-0.025em' }}>৳{order.total?.toFixed(2)}</p>
+                     <p style={{ fontSize:'0.75rem',color:'var(--slate)' }}>{order.createdAt?new Date(order.createdAt).toLocaleDateString('en-GB'):'—'}</p>
+                   </div>
+                   <div onClick={e=>e.stopPropagation()} style={{ flexShrink:0 }}>
+@@ -118,12 +118,12 @@ export default function AdminOrdersPage() {
+                               <p style={{ fontSize:'0.875rem',fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{item.name}</p>
+                               <p style={{ fontSize:'0.75rem',color:'var(--slate)' }}>Qty: {item.quantity}</p>
+                             </div>
+-                            <span style={{ fontWeight:700,fontSize:'0.9375rem',flexShrink:0 }}>£{(item.price*item.quantity).toFixed(2)}</span>
++                            <span style={{ fontWeight:700,fontSize:'0.9375rem',flexShrink:0 }}>৳{(item.price*item.quantity).toFixed(2)}</span>
+                           </div>
+                         ))}
+                       </div>
+                       <div style={{ marginTop:'0.875rem',paddingTop:'0.875rem',borderTop:'1px solid var(--hairline)',display:'flex',flexDirection:'column',gap:'0.375rem' }}>
+-                        {[['Subtotal',`£${order.subtotal?.toFixed(2)}`],['Delivery',order.deliveryFee===0?'Free':`£${order.deliveryFee?.toFixed(2)}`],['Total',`£${order.total?.toFixed(2)}`]].map(([l,v])=>(
++                        {[['Subtotal',`৳${order.subtotal?.toFixed(2)}`],['Delivery',order.deliveryFee===0?'Free':`৳${order.deliveryFee?.toFixed(2)}`],['Total',`৳${order.total?.toFixed(2)}`]].map(([l,v])=>(
+                           <div key={l} style={{ display:'flex',justifyContent:'space-between',fontSize:l==='Total'?'1rem':'0.875rem' }}>
+                             <span style={{color:'var(--slate)'}}>{l}</span>
+                             <span style={{fontWeight:l==='Total'?900:500}}>{v}</span>
+diff --git a/src/app/admin/goingintodeep/page.js b/src/app/admin/goingintodeep/page.js
+index 98d6dd2..367eb31 100644
+--- a/src/app/admin/goingintodeep/page.js
++++ b/src/app/admin/goingintodeep/page.js
+@@ -30,7 +30,7 @@ export default function AdminDashboard() {
+   const STATS = [
+     { label:'Total Products', value:productsLoading?'—':products.length, icon:Package,      color:'#5433eb', bg:'rgba(84,51,235,0.1)',  sub:`${lowStock} low stock` },
+     { label:'Total Orders',   value:orders.length,        icon:ShoppingCart, color:'#3b82f6', bg:'rgba(59,130,246,0.1)', sub:`${pending} pending` },
+-    { label:'Revenue',        value:`£${revenue.toFixed(2)}`, icon:TrendingUp, color:'#10b981', bg:'rgba(16,185,129,0.1)', sub:'All time' },
++    { label:'Revenue',        value:`৳${revenue.toFixed(2)}`, icon:TrendingUp, color:'#10b981', bg:'rgba(16,185,129,0.1)', sub:'All time' },
+     { label:'Avg Rating',     value:avgRat,               icon:Star,         color:'#f59e0b', bg:'rgba(245,158,11,0.1)', sub:'All products' },
+   ];
+ 
+@@ -83,7 +83,7 @@ export default function AdminDashboard() {
+                     </div>
+                     <div style={{ display:'flex',alignItems:'center',gap:'0.75rem' }}>
+                       <span style={{ fontSize:'0.6875rem',padding:'3px 9px',borderRadius:99,background:s.bg,color:s.c,fontWeight:700,textTransform:'uppercase',letterSpacing:'0.04em' }}>{o.status}</span>
+-                      <span style={{ fontWeight:800,fontSize:'0.9375rem' }}>£{o.total?.toFixed(2)}</span>
++                      <span style={{ fontWeight:800,fontSize:'0.9375rem' }}>৳{o.total?.toFixed(2)}</span>
+                     </div>
+                   </div>
+                 );
+@@ -114,7 +114,7 @@ export default function AdminDashboard() {
+                     <p style={{ fontSize:'0.875rem',fontWeight:600,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{p.name}</p>
+                     <p style={{ fontSize:'0.75rem',color:'var(--slate)' }}>{p.reviews||0} reviews · ★{p.rating||0}</p>
+                   </div>
+-                  <span style={{ fontWeight:800,fontSize:'0.9375rem',flexShrink:0 }}>£{p.price.toFixed(2)}</span>
++                  <span style={{ fontWeight:800,fontSize:'0.9375rem',flexShrink:0 }}>৳{p.price.toFixed(2)}</span>
+                 </div>
+               ))
+             )}
+diff --git a/src/app/admin/goingintodeep/products/page.js b/src/app/admin/goingintodeep/products/page.js
+index b322f08..b5cb170 100644
+--- a/src/app/admin/goingintodeep/products/page.js
++++ b/src/app/admin/goingintodeep/products/page.js
+@@ -82,8 +82,8 @@ export default function AdminProductsPage() {
+                     </td>
+                     <td style={{ color:'var(--slate)',fontSize:'0.875rem' }}>{p.category}</td>
+                     <td>
+-                      <p style={{ fontWeight:800,fontSize:'1rem' }}>£{p.price.toFixed(2)}</p>
+-                      {p.originalPrice&&<p style={{ fontSize:'0.75rem',color:'var(--muted)',textDecoration:'line-through' }}>£{p.originalPrice.toFixed(2)}</p>}
++                      <p style={{ fontWeight:800,fontSize:'1rem' }}>৳{p.price.toFixed(2)}</p>
++                      {p.originalPrice&&<p style={{ fontSize:'0.75rem',color:'var(--muted)',textDecoration:'line-through' }}>৳{p.originalPrice.toFixed(2)}</p>}
+                     </td>
+                     <td>
+                       <span style={{ fontWeight:700,fontSize:'0.9375rem',color:p.stock<10?'#e74c3c':p.stock<20?'#f59e0b':'var(--green)' }}>{p.stock}</span>
+diff --git a/src/app/api/products/route.js b/src/app/api/products/route.js
+index bab91a5..facedd4 100644
+--- a/src/app/api/products/route.js
++++ b/src/app/api/products/route.js
+@@ -17,8 +17,18 @@ export async function GET(request) {
+   // or explicitly deactivated ones) so nothing becomes invisible and
+   // unrecoverable. The storefront passes active=true explicitly.
+   const activeOnly = searchParams.get('active') === 'true';
+-  const minPrice = parseFloat(searchParams.get('minPrice') || '0');
+-  const maxPrice = parseFloat(searchParams.get('maxPrice') || '999');
++  // Like activeOnly above, the price range is opt-in — only applied when the
++  // caller actually passes minPrice/maxPrice. Previously maxPrice defaulted
++  // to 999 even when no price filter was requested, which silently dropped
++  // any product priced above that from EVERY /api/products call (admin
++  // pages happened to stay under it with demo data, but the public
++  // storefront was one hardcoded default away from hiding real inventory —
++  // especially once prices are in BDT, where everyday grocery prices
++  // routinely exceed 999).
++  const minPriceParam = searchParams.get('minPrice');
++  const maxPriceParam = searchParams.get('maxPrice');
++  const minPrice = minPriceParam !== null ? parseFloat(minPriceParam) : null;
++  const maxPrice = maxPriceParam !== null ? parseFloat(maxPriceParam) : null;
+ 
+   try {
+     const db = await connectDB();
+@@ -32,7 +42,11 @@ export async function GET(request) {
+       if (organic) query.isOrganic = true;
+       if (type) query.types = type;
+       if (search) query.$or = [{ name: { $regex: search, $options: 'i' } }, { category: { $regex: search, $options: 'i' } }];
+-      query.price = { $gte: minPrice, $lte: maxPrice };
++      if (minPrice !== null || maxPrice !== null) {
++        query.price = {};
++        if (minPrice !== null) query.price.$gte = minPrice;
++        if (maxPrice !== null) query.price.$lte = maxPrice;
++      }
+       products = await Product.find(query).lean();
+     } else {
+       products = productsData;
+@@ -43,7 +57,8 @@ export async function GET(request) {
+       if (organic) products = products.filter(p => p.isOrganic);
+       if (type) products = products.filter(p => Array.isArray(p.types) && p.types.includes(type));
+       if (search) products = products.filter(p => p.name.toLowerCase().includes(search.toLowerCase()) || p.category.toLowerCase().includes(search.toLowerCase()));
+-      products = products.filter(p => p.price >= minPrice && p.price <= maxPrice);
++      if (minPrice !== null) products = products.filter(p => p.price >= minPrice);
++      if (maxPrice !== null) products = products.filter(p => p.price <= maxPrice);
+     }
+     if (sort === 'price-asc') products.sort((a, b) => a.price - b.price);
+     if (sort === 'price-desc') products.sort((a, b) => b.price - a.price);
+diff --git a/src/app/cart/page.js b/src/app/cart/page.js
+index e110564..f24faf3 100644
+--- a/src/app/cart/page.js
++++ b/src/app/cart/page.js
+@@ -49,9 +49,9 @@ export default function CartPage() {
+                           onMouseLeave={e=>e.target.style.color='var(--ink)'}>
+                           {item.name}
+                         </Link>
+-                        <span style={{ fontWeight:800,fontSize:'clamp(1rem,2.5vw,1.125rem)',letterSpacing:'-0.025em',flexShrink:0 }}>£{(item.price*item.quantity).toFixed(2)}</span>
++                        <span style={{ fontWeight:800,fontSize:'clamp(1rem,2.5vw,1.125rem)',letterSpacing:'-0.025em',flexShrink:0 }}>৳{(item.price*item.quantity).toFixed(2)}</span>
+                       </div>
+-                      <p style={{ fontSize:'0.8125rem',color:'var(--muted)',marginBottom:'0.875rem' }}>{item.unit} · £{item.price.toFixed(2)} each</p>
++                      <p style={{ fontSize:'0.8125rem',color:'var(--muted)',marginBottom:'0.875rem' }}>{item.unit} · ৳{item.price.toFixed(2)} each</p>
+                       <div style={{ display:'flex',alignItems:'center',justifyContent:'space-between',flexWrap:'wrap',gap:'0.5rem' }}>
+                         <div className="qty-ctrl" style={{ border:'1.5px solid var(--hairline)' }}>
+                           <button className="qty-btn" onClick={()=>updateQuantity(item.id,item.quantity-1)} disabled={item.quantity<=1} style={{opacity:item.quantity<=1?0.3:1}}><Minus size={13}/></button>
+@@ -86,7 +86,7 @@ export default function CartPage() {
+                 {total < 50 && (
+                   <div style={{ background:'var(--canvas)',borderRadius:12,padding:'1rem',marginBottom:'1.25rem' }}>
+                     <p style={{ fontSize:'0.8125rem',color:'var(--slate)',marginBottom:'0.5rem' }}>
+-                      Add <strong style={{color:'var(--ink)'}}>£{(50-total).toFixed(2)}</strong> for free delivery
++                      Add <strong style={{color:'var(--ink)'}}>৳{(50-total).toFixed(2)}</strong> for free delivery
+                     </p>
+                     <div className="progress">
+                       <div className="progress-fill" style={{width:`${progress}%`}}/>
+@@ -95,14 +95,14 @@ export default function CartPage() {
+                 )}
+ 
+                 <div style={{ display:'flex',flexDirection:'column',gap:'0.625rem',marginBottom:'1.25rem' }}>
+-                  {[['Subtotal',`£${total.toFixed(2)}`],['Delivery',fee===0?'🎉 Free':`£${fee.toFixed(2)}`]].map(([l,v])=>(
++                  {[['Subtotal',`৳${total.toFixed(2)}`],['Delivery',fee===0?'🎉 Free':`৳${fee.toFixed(2)}`]].map(([l,v])=>(
+                     <div key={l} style={{ display:'flex',justifyContent:'space-between',fontSize:'0.9375rem' }}>
+                       <span style={{color:'var(--slate)'}}>{l}</span>
+                       <span style={{fontWeight:600,color:fee===0&&l==='Delivery'?'var(--green)':'var(--ink)'}}>{v}</span>
+                     </div>
+                   ))}
+                   <div style={{ display:'flex',justifyContent:'space-between',fontSize:'clamp(1.125rem,3vw,1.25rem)',fontWeight:900,letterSpacing:'-0.03em',paddingTop:'0.875rem',borderTop:'1px solid var(--hairline)',marginTop:'0.25rem' }}>
+-                    <span>Total</span><span>£{(total+fee).toFixed(2)}</span>
++                    <span>Total</span><span>৳{(total+fee).toFixed(2)}</span>
+                   </div>
+                 </div>
+                 <Link href="/checkout" className="btn btn-primary btn-lg" style={{ width:'100%',justifyContent:'center',display:'flex' }}>
+diff --git a/src/app/checkout/page.js b/src/app/checkout/page.js
+index 2698c1e..6e47902 100644
+--- a/src/app/checkout/page.js
++++ b/src/app/checkout/page.js
+@@ -149,7 +149,7 @@ export default function CheckoutPage() {
+                           <p style={{ fontWeight:600,fontSize:'0.9375rem',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginBottom:'0.125rem' }}>{item.name}</p>
+                           <p style={{ fontSize:'0.8125rem',color:'var(--slate)' }}>Qty: {item.quantity}</p>
+                         </div>
+-                        <span style={{ fontWeight:800,fontSize:'1rem',flexShrink:0 }}>£{(item.price*item.quantity).toFixed(2)}</span>
++                        <span style={{ fontWeight:800,fontSize:'1rem',flexShrink:0 }}>৳{(item.price*item.quantity).toFixed(2)}</span>
+                       </div>
+                     ))}
+                   </div>
+@@ -186,18 +186,18 @@ export default function CheckoutPage() {
+                 {items.map(i=>(
+                   <div key={i.id} style={{ display:'flex',justifyContent:'space-between',fontSize:'0.875rem',marginBottom:'0.5rem' }}>
+                     <span style={{ color:'var(--slate)',flex:1,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',marginRight:'0.75rem' }}>{i.name} ×{i.quantity}</span>
+-                    <span style={{ fontWeight:600,flexShrink:0 }}>£{(i.price*i.quantity).toFixed(2)}</span>
++                    <span style={{ fontWeight:600,flexShrink:0 }}>৳{(i.price*i.quantity).toFixed(2)}</span>
+                   </div>
+                 ))}
+               </div>
+-              {[['Subtotal',`£${total.toFixed(2)}`],['Delivery',fee===0?'Free':`£${fee.toFixed(2)}`]].map(([l,v])=>(
++              {[['Subtotal',`৳${total.toFixed(2)}`],['Delivery',fee===0?'Free':`৳${fee.toFixed(2)}`]].map(([l,v])=>(
+                 <div key={l} style={{ display:'flex',justifyContent:'space-between',fontSize:'0.9375rem',marginBottom:'0.625rem' }}>
+                   <span style={{color:'var(--slate)'}}>{l}</span>
+                   <span style={{fontWeight:600,color:fee===0&&l==='Delivery'?'var(--green)':'var(--ink)'}}>{v}</span>
+                 </div>
+               ))}
+               <div style={{ display:'flex',justifyContent:'space-between',fontSize:'1.125rem',fontWeight:900,letterSpacing:'-0.025em',paddingTop:'0.875rem',borderTop:'1px solid var(--hairline)',marginTop:'0.25rem' }}>
+-                <span>Total</span><span>£{(total+fee).toFixed(2)}</span>
++                <span>Total</span><span>৳{(total+fee).toFixed(2)}</span>
+               </div>
+             </div>
+           </div>
+diff --git a/src/app/layout.js b/src/app/layout.js
+index 3490dfb..369a70b 100644
+--- a/src/app/layout.js
++++ b/src/app/layout.js
+@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast';
+ 
+ export const metadata = {
+   title: { default: 'FreshMart — Premium Organic Grocery', template: '%s | FreshMart' },
+-  description: 'Shop the finest organic, locally sourced groceries. Free delivery over £50. Same-day delivery available.',
++  description: 'Shop the finest organic, locally sourced groceries. Free delivery over ৳50. Same-day delivery available.',
+   keywords: ['organic grocery', 'fresh produce', 'online supermarket', 'sustainable food'],
+   openGraph: { title: 'FreshMart', description: 'Premium organic groceries delivered.', type: 'website', siteName: 'FreshMart' },
+   robots: { index: true, follow: true },
+diff --git a/src/app/page.js b/src/app/page.js
+index e144a79..6cc21d3 100644
+--- a/src/app/page.js
++++ b/src/app/page.js
+@@ -16,7 +16,7 @@ import { DEFAULT_HOME_SECTIONS } from '@/lib/defaultHomeSections';
+ 
+ export const metadata = {
+   title: 'FreshMart — Premium Organic Grocery Delivered',
+-  description: 'Shop the finest organic produce, artisan foods & sustainably sourced groceries. Free delivery over £50. Same-day delivery available.',
++  description: 'Shop the finest organic produce, artisan foods & sustainably sourced groceries. Free delivery over ৳50. Same-day delivery available.',
+ };
+ 
+ async function getProducts() {
+diff --git a/src/app/products/[id]/page.js b/src/app/products/[id]/page.js
+index 9a65c33..168aad8 100644
+--- a/src/app/products/[id]/page.js
++++ b/src/app/products/[id]/page.js
+@@ -144,12 +144,12 @@ export default function ProductDetailPage() {
+ 
+             {/* Price */}
+             <div style={{ marginBottom:'1rem' }}>
+-              <span style={{ fontSize:'clamp(2rem,5vw,2.5rem)',fontWeight:900,letterSpacing:'-0.04em' }}>£{product.price.toFixed(2)}</span>
++              <span style={{ fontSize:'clamp(2rem,5vw,2.5rem)',fontWeight:900,letterSpacing:'-0.04em' }}>৳{product.price.toFixed(2)}</span>
+               {product.originalPrice && (
+                 <>
+-                  <span style={{ fontSize:'1.25rem',color:'var(--muted)',textDecoration:'line-through',marginLeft:'0.75rem' }}>£{product.originalPrice.toFixed(2)}</span>
++                  <span style={{ fontSize:'1.25rem',color:'var(--muted)',textDecoration:'line-through',marginLeft:'0.75rem' }}>৳{product.originalPrice.toFixed(2)}</span>
+                   <span className="tag tag-red" style={{ marginLeft:'0.625rem',verticalAlign:'middle' }}>
+-                    Save £{(product.originalPrice-product.price).toFixed(2)}
++                    Save ৳{(product.originalPrice-product.price).toFixed(2)}
+                   </span>
+                 </>
+               )}
+@@ -193,7 +193,7 @@ export default function ProductDetailPage() {
+ 
+             {/* Trust strip */}
+             <div style={{ display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'0.625rem',marginTop:'1.5rem' }}>
+-              {[{icon:Truck,t:'Free £50+'},{icon:Shield,t:'Freshness Guar.'},{icon:Leaf,t:'Organic'}].map(({icon:Icon,t})=>(
++              {[{icon:Truck,t:'Free ৳50+'},{icon:Shield,t:'Freshness Guar.'},{icon:Leaf,t:'Organic'}].map(({icon:Icon,t})=>(
+                 <div key={t} style={{ background:'var(--off-white)',borderRadius:12,padding:'0.75rem 0.5rem',textAlign:'center',border:'1px solid var(--hairline)' }}>
+                   <Icon size={16} style={{color:'var(--violet)',marginBottom:5}}/>
+                   <p style={{ fontSize:'0.6875rem',color:'var(--slate)',letterSpacing:'-0.01em' }}>{t}</p>
+diff --git a/src/app/products/page.js b/src/app/products/page.js
+index 0f1ba38..402d88e 100644
+--- a/src/app/products/page.js
++++ b/src/app/products/page.js
+@@ -19,6 +19,14 @@ const QUICK_FILTERS = [
+   { key: 'newArrival', label: 'New Arrivals' },
+ ];
+ 
++// Top end of the "Max Price" slider. This is just the slider's travel range,
++// not a filter that's ever applied by default — maxPrice itself starts at
++// `null` (see ProductsContent) meaning "no cap", so products aren't hidden
++// just for costing more than this. Dragging the slider all the way to this
++// value is treated as "remove the cap" too (see the slider's onChange),
++// shown as "৳2000+".
++const PRICE_CEILING = 2000;
++
+ function Skel() {
+   return (
+     <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid var(--hairline)' }}>
+@@ -76,9 +84,11 @@ function SortFilterMenu({ sort, setSort, filters, setFilters, maxPrice, setMaxPr
+           <div style={{ borderTop: '1px solid var(--hairline)', paddingTop: '1.25rem' }}>
+             <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--slate)', marginBottom: '0.625rem' }}>Max Price</p>
+             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+-              <span>£0</span><span style={{ fontWeight: 700 }}>£{maxPrice}</span>
++              <span>৳0</span><span style={{ fontWeight: 700 }}>{maxPrice == null ? `৳${PRICE_CEILING}+` : `৳${maxPrice}`}</span>
+             </div>
+-            <input type="range" min={1} max={25} value={maxPrice} onChange={e => setMaxPrice(+e.target.value)} style={{ width: '100%', accentColor: 'var(--violet)' }} />
++            <input type="range" min={1} max={PRICE_CEILING} value={maxPrice ?? PRICE_CEILING}
++              onChange={e => { const v = +e.target.value; setMaxPrice(v >= PRICE_CEILING ? null : v); }}
++              style={{ width: '100%', accentColor: 'var(--violet)' }} />
+           </div>
+ 
+           <div style={{ borderTop: '1px solid var(--hairline)', paddingTop: '1.25rem' }}>
+@@ -156,7 +166,7 @@ function ProductsContent() {
+   const [sort, setSort] = useState('default');
+   const [search, setSearch] = useState(sp.get('search') || '');
+   const [searchInput, setSearchInput] = useState(sp.get('search') || '');
+-  const [maxPrice, setMaxPrice] = useState(25);
++  const [maxPrice, setMaxPrice] = useState(null); // null = no price cap applied
+   const [filters, setFilters] = useState({ organic: sp.get('organic') === 'true', flashSale: sp.get('flashSale') === 'true', newArrival: sp.get('newArrival') === 'true' });
+   const [sidebar, setSidebar] = useState(false);
+   const [categories, setCategories] = useState([]);
+@@ -181,7 +191,8 @@ function ProductsContent() {
+       p.set('active', 'true');
+       if (category !== 'All') p.set('category', category);
+       if (type) p.set('type', type);
+-      p.set('sort', sort); p.set('maxPrice', maxPrice);
++      p.set('sort', sort);
++      if (maxPrice != null) p.set('maxPrice', maxPrice);
+       if (search) p.set('search', search);
+       if (filters.organic) p.set('organic', 'true');
+       if (filters.flashSale) p.set('flashSale', 'true');
+@@ -189,7 +200,6 @@ function ProductsContent() {
+       const r = await fetch(`/api/products?${p}`);
+       const d = await r.json();
+       setProducts((d.products || []).map(p => ({ ...p, id: (p.id || p._id)?.toString() })));
+-      console.log(products)
+     } catch { setProducts([]); }
+     setLoading(false);
+   }, [category, type, sort, search, filters, maxPrice]);
+@@ -203,8 +213,8 @@ function ProductsContent() {
+     setFilters({ organic: sp.get('organic') === 'true', flashSale: sp.get('flashSale') === 'true', newArrival: sp.get('newArrival') === 'true' });
+   }, [sp]);
+ 
+-  const clearAll = () => { setCat('All'); setType(''); setSearch(''); setSearchInput(''); setFilters({ organic: false, flashSale: false, newArrival: false }); setMaxPrice(25); };
+-  const activeCount = Object.values(filters).filter(Boolean).length + (category !== 'All' ? 1 : 0) + (type ? 1 : 0);
++  const clearAll = () => { setCat('All'); setType(''); setSearch(''); setSearchInput(''); setFilters({ organic: false, flashSale: false, newArrival: false }); setMaxPrice(null); };
++  const activeCount = Object.values(filters).filter(Boolean).length + (category !== 'All' ? 1 : 0) + (type ? 1 : 0) + (maxPrice != null ? 1 : 0);
+ 
+   const activeTypeLabel = type ? types.find(t => t.slug === type)?.name : null;
+ 
+diff --git a/src/app/wishlist/page.js b/src/app/wishlist/page.js
+index 0b9478e..f638d71 100644
+--- a/src/app/wishlist/page.js
++++ b/src/app/wishlist/page.js
+@@ -54,7 +54,7 @@ export default function WishlistPage() {
+                     <Link href={`/products/${product.id}`}>
+                       <h3 className="t-h3" style={{ marginBottom:'0.375rem',display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden' }}>{product.name}</h3>
+                     </Link>
+-                    <p style={{ fontSize:'1.125rem',fontWeight:800,letterSpacing:'-0.025em',marginBottom:'0.875rem' }}>£{product.price.toFixed(2)}</p>
++                    <p style={{ fontSize:'1.125rem',fontWeight:800,letterSpacing:'-0.025em',marginBottom:'0.875rem' }}>৳{product.price.toFixed(2)}</p>
+                     <button onClick={()=>addToCart(product)} className="btn btn-primary btn-sm" style={{ width:'100%',justifyContent:'center' }}>
+                       <ShoppingBag size={14}/> Add to Cart
+                     </button>
+diff --git a/src/components/admin/ProductForm.js b/src/components/admin/ProductForm.js
+index c0e3234..c97128c 100644
+--- a/src/components/admin/ProductForm.js
++++ b/src/components/admin/ProductForm.js
+@@ -167,8 +167,8 @@ export default function ProductForm({ initial = {}, mode = 'add', productId }) {
+ 
+       <Card title="Pricing & Inventory">
+         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1rem' }}>
+-          <Field form={form} set={set} label="Sale Price (£)" k="price" type="number" req ph="4.99" half />
+-          <Field form={form} set={set} label="Original Price (£)" k="originalPrice" type="number" ph="6.99" half />
++          <Field form={form} set={set} label="Sale Price (৳)" k="price" type="number" req ph="4.99" half />
++          <Field form={form} set={set} label="Original Price (৳)" k="originalPrice" type="number" ph="6.99" half />
+           <Field form={form} set={set} label="Discount %" k="discount" type="number" ph="29" half />
+           <Field form={form} set={set} label="Stock Qty" k="stock" type="number" ph="50" half />
+         </div>
+diff --git a/src/components/home/HeroSection.js b/src/components/home/HeroSection.js
+index 19c9bd7..14ab4b0 100644
+--- a/src/components/home/HeroSection.js
++++ b/src/components/home/HeroSection.js
+@@ -20,7 +20,7 @@ const SLIDES = [
+     title: 'Big Savings,\nBig Flavour',
+     sub: 'Today\'s best deals on premium groceries. Limited stock — act fast!',
+     cta: 'View Deals', href: '/products?flashSale=true',
+-    stat: [{ n: '30%', l: 'Max Discount' }, { n: '8h', l: 'Remaining' }, { n: '£0', l: 'Delivery £50+' }],
++    stat: [{ n: '30%', l: 'Max Discount' }, { n: '8h', l: 'Remaining' }, { n: '৳0', l: 'Delivery ৳50+' }],
+   },
+   {
+     image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=1600&q=85',
+@@ -135,7 +135,7 @@ export default function HeroSection() {
+       {/* Trust strip */}
+       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 3, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+         <div className="container" style={{ height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(1.25rem, 4vw, 3rem)', flexWrap: 'wrap' }}>
+-          {[['🌿','Certified Organic'],['🚚','Free Delivery £50+'],['⭐','4.9 Rating'],['♻️','Carbon Neutral']].map(([e, t]) => (
++          {[['🌿','Certified Organic'],['🚚','Free Delivery ৳50+'],['⭐','4.9 Rating'],['♻️','Carbon Neutral']].map(([e, t]) => (
+             <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'rgba(255,255,255,0.75)', fontSize: '0.8125rem', whiteSpace: 'nowrap' }}>
+               <span style={{ fontSize: '1rem' }}>{e}</span> {t}
+             </div>
+diff --git a/src/components/home/TrustSection.js b/src/components/home/TrustSection.js
+index 03e3189..96a9acd 100644
+--- a/src/components/home/TrustSection.js
++++ b/src/components/home/TrustSection.js
+@@ -3,7 +3,7 @@ import { Leaf, Truck, RefreshCw, Shield, Award, Clock } from 'lucide-react';
+ 
+ const FEATURES = [
+   { icon: Leaf,      title: 'Certified Organic',    desc: 'Every product certified to strict organic standards from verified farms worldwide.' },
+-  { icon: Truck,     title: 'Free Delivery',         desc: 'Complimentary next-day delivery on all orders over £50 anywhere in the UK.' },
++  { icon: Truck,     title: 'Free Delivery',         desc: 'Complimentary next-day delivery on all orders over ৳50 anywhere in the UK.' },
+   { icon: Clock,     title: 'Same-Day by 2pm',       desc: 'Order before 2pm for same-day delivery. We never keep you waiting.' },
+   { icon: Shield,    title: 'Freshness Guarantee',   desc: '100% freshness guarantee on everything we sell — or your money back, instantly.' },
+   { icon: RefreshCw, title: 'Easy Returns',          desc: 'Not happy? Return anything within 24 hours. No questions, no hassle.' },
+diff --git a/src/components/layout/CartDrawer.js b/src/components/layout/CartDrawer.js
+index 2c50eba..9bec698 100644
+--- a/src/components/layout/CartDrawer.js
++++ b/src/components/layout/CartDrawer.js
+@@ -38,7 +38,7 @@ export default function CartDrawer() {
+             ) : (
+               <>
+                 <p style={{ fontSize: '0.8125rem', color: 'var(--slate)', marginBottom: '0.5rem' }}>
+-                  Add <strong style={{ color: 'var(--ink)' }}>£{(50 - total).toFixed(2)}</strong> more for free delivery
++                  Add <strong style={{ color: 'var(--ink)' }}>৳{(50 - total).toFixed(2)}</strong> more for free delivery
+                 </p>
+                 <div className="progress">
+                   <div className="progress-fill" style={{ width: `${progress}%` }} />
+@@ -92,7 +92,7 @@ export default function CartDrawer() {
+                         </button>
+                       </div>
+                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.625rem' }}>
+-                        <span style={{ fontWeight: 700, fontSize: '0.9375rem' }}>£{(item.price * item.quantity).toFixed(2)}</span>
++                        <span style={{ fontWeight: 700, fontSize: '0.9375rem' }}>৳{(item.price * item.quantity).toFixed(2)}</span>
+                         <button onClick={() => removeFromCart(item.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', display: 'flex', transition: 'color 0.15s' }}
+                           onMouseEnter={e => e.currentTarget.style.color = '#e74c3c'}
+                           onMouseLeave={e => e.currentTarget.style.color = 'var(--muted)'}>
+@@ -111,7 +111,7 @@ export default function CartDrawer() {
+         {count > 0 && (
+           <div style={{ padding: '1.25rem 1.5rem', borderTop: '1px solid var(--hairline)', flexShrink: 0, background: '#fff' }}>
+             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.125rem' }}>
+-              {[['Subtotal', `£${total.toFixed(2)}`], ['Delivery', deliveryFee === 0 ? '🎉 Free' : `£${deliveryFee.toFixed(2)}`]].map(([l, v]) => (
++              {[['Subtotal', `৳${total.toFixed(2)}`], ['Delivery', deliveryFee === 0 ? '🎉 Free' : `৳${deliveryFee.toFixed(2)}`]].map(([l, v]) => (
+                 <div key={l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                   <span style={{ color: 'var(--slate)' }}>{l}</span>
+                   <span style={{ fontWeight: 600, color: deliveryFee === 0 && l === 'Delivery' ? 'var(--green)' : 'var(--ink)' }}>{v}</span>
+@@ -119,7 +119,7 @@ export default function CartDrawer() {
+               ))}
+               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '1.0625rem', fontWeight: 800, letterSpacing: '-0.025em', paddingTop: '0.75rem', borderTop: '1px solid var(--hairline)' }}>
+                 <span>Total</span>
+-                <span>£{(total + deliveryFee).toFixed(2)}</span>
++                <span>৳{(total + deliveryFee).toFixed(2)}</span>
+               </div>
+             </div>
+             <Link href="/checkout" onClick={() => setIsOpen(false)} className="btn btn-primary"
+diff --git a/src/components/layout/Header.js b/src/components/layout/Header.js
+index a1b6d91..3b73bba 100644
+--- a/src/components/layout/Header.js
++++ b/src/components/layout/Header.js
+@@ -57,7 +57,7 @@ export default function Header() {
+       <div style={{ background: 'var(--near-black)', height: 36, overflow: 'hidden' }}>
+         <div className="marquee-wrap" style={{ height: '100%', display: 'flex', alignItems: 'center' }}>
+           <div className="marquee-track" style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.6875rem', letterSpacing: '0.08em' }}>
+-            {Array(6).fill(['🌿 Certified Organic', '🚚 Free Delivery £50+', '⚡ Same-Day by 2pm', '🌍 Plastic-Free Packaging', '⭐ 50,000+ Happy Customers', '♻️ Carbon Neutral Delivery']).flat().map((t, i) => (
++            {Array(6).fill(['🌿 Certified Organic', '🚚 Free Delivery ৳50+', '⚡ Same-Day by 2pm', '🌍 Plastic-Free Packaging', '⭐ 50,000+ Happy Customers', '♻️ Carbon Neutral Delivery']).flat().map((t, i) => (
+               <span key={i} style={{ marginRight: '4rem' }}>{t}</span>
+             ))}
+           </div>
+diff --git a/src/components/product/ProductCard.js b/src/components/product/ProductCard.js
+index 24424e0..6b569b3 100644
+--- a/src/components/product/ProductCard.js
++++ b/src/components/product/ProductCard.js
+@@ -68,10 +68,10 @@ export default function ProductCard({ product, index = 0 }) {
+         {/* Price row */}
+         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.25rem' }}>
+           <div>
+-            <span className="t-price">£{product.price.toFixed(2)}</span>
++            <span className="t-price">৳{product.price.toFixed(2)}</span>
+             {product.originalPrice && (
+               <span style={{ fontSize: '0.75rem', color: 'var(--muted)', textDecoration: 'line-through', marginLeft: '0.375rem' }}>
+-                £{product.originalPrice.toFixed(2)}
++                ৳{product.originalPrice.toFixed(2)}
+               </span>
+             )}
+           </div>

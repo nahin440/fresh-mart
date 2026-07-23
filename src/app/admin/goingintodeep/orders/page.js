@@ -87,7 +87,7 @@ export default function AdminOrdersPage() {
                     <p style={{ fontSize:'0.6875rem',color:'var(--muted)' }}>items</p>
                   </div>
                   <div style={{ textAlign:'right',flexShrink:0 }}>
-                    <p style={{ fontWeight:900,fontSize:'1.125rem',letterSpacing:'-0.025em' }}>£{order.total?.toFixed(2)}</p>
+                    <p style={{ fontWeight:900,fontSize:'1.125rem',letterSpacing:'-0.025em' }}>৳{order.total?.toFixed(2)}</p>
                     <p style={{ fontSize:'0.75rem',color:'var(--slate)' }}>{order.createdAt?new Date(order.createdAt).toLocaleDateString('en-GB'):'—'}</p>
                   </div>
                   <div onClick={e=>e.stopPropagation()} style={{ flexShrink:0 }}>
@@ -118,12 +118,12 @@ export default function AdminOrdersPage() {
                               <p style={{ fontSize:'0.875rem',fontWeight:500,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap' }}>{item.name}</p>
                               <p style={{ fontSize:'0.75rem',color:'var(--slate)' }}>Qty: {item.quantity}</p>
                             </div>
-                            <span style={{ fontWeight:700,fontSize:'0.9375rem',flexShrink:0 }}>£{(item.price*item.quantity).toFixed(2)}</span>
+                            <span style={{ fontWeight:700,fontSize:'0.9375rem',flexShrink:0 }}>৳{(item.price*item.quantity).toFixed(2)}</span>
                           </div>
                         ))}
                       </div>
                       <div style={{ marginTop:'0.875rem',paddingTop:'0.875rem',borderTop:'1px solid var(--hairline)',display:'flex',flexDirection:'column',gap:'0.375rem' }}>
-                        {[['Subtotal',`£${order.subtotal?.toFixed(2)}`],['Delivery',order.deliveryFee===0?'Free':`£${order.deliveryFee?.toFixed(2)}`],['Total',`£${order.total?.toFixed(2)}`]].map(([l,v])=>(
+                        {[['Subtotal',`৳${order.subtotal?.toFixed(2)}`],['Delivery',order.deliveryFee===0?'Free':`৳${order.deliveryFee?.toFixed(2)}`],['Total',`৳${order.total?.toFixed(2)}`]].map(([l,v])=>(
                           <div key={l} style={{ display:'flex',justifyContent:'space-between',fontSize:l==='Total'?'1rem':'0.875rem' }}>
                             <span style={{color:'var(--slate)'}}>{l}</span>
                             <span style={{fontWeight:l==='Total'?900:500}}>{v}</span>

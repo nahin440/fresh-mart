@@ -19,6 +19,14 @@ const QUICK_FILTERS = [
   { key: 'newArrival', label: 'New Arrivals' },
 ];
 
+// Top end of the "Max Price" slider. This is just the slider's travel range,
+// not a filter that's ever applied by default — maxPrice itself starts at
+// `null` (see ProductsContent) meaning "no cap", so products aren't hidden
+// just for costing more than this. Dragging the slider all the way to this
+// value is treated as "remove the cap" too (see the slider's onChange),
+// shown as "৳2000+".
+const PRICE_CEILING = 2000;
+
 function Skel() {
   return (
     <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid var(--hairline)' }}>
@@ -76,9 +84,11 @@ function SortFilterMenu({ sort, setSort, filters, setFilters, maxPrice, setMaxPr
           <div style={{ borderTop: '1px solid var(--hairline)', paddingTop: '1.25rem' }}>
             <p style={{ fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--slate)', marginBottom: '0.625rem' }}>Max Price</p>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
-              <span>£0</span><span style={{ fontWeight: 700 }}>£{maxPrice}</span>
+              <span>৳0</span><span style={{ fontWeight: 700 }}>{maxPrice == null ? `৳${PRICE_CEILING}+` : `৳${maxPrice}`}</span>
             </div>
-            <input type="range" min={1} max={25} value={maxPrice} onChange={e => setMaxPrice(+e.target.value)} style={{ width: '100%', accentColor: 'var(--violet)' }} />
+            <input type="range" min={1} max={PRICE_CEILING} value={maxPrice ?? PRICE_CEILING}
+              onChange={e => { const v = +e.target.value; setMaxPrice(v >= PRICE_CEILING ? null : v); }}
+              style={{ width: '100%', accentColor: 'var(--violet)' }} />
           </div>
 
           <div style={{ borderTop: '1px solid var(--hairline)', paddingTop: '1.25rem' }}>
@@ -156,7 +166,7 @@ function ProductsContent() {
   const [sort, setSort] = useState('default');
   const [search, setSearch] = useState(sp.get('search') || '');
   const [searchInput, setSearchInput] = useState(sp.get('search') || '');
-  const [maxPrice, setMaxPrice] = useState(25);
+  const [maxPrice, setMaxPrice] = useState(null); // null = no price cap applied
   const [filters, setFilters] = useState({ organic: sp.get('organic') === 'true', flashSale: sp.get('flashSale') === 'true', newArrival: sp.get('newArrival') === 'true' });
   const [sidebar, setSidebar] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -181,7 +191,8 @@ function ProductsContent() {
       p.set('active', 'true');
       if (category !== 'All') p.set('category', category);
       if (type) p.set('type', type);
-      p.set('sort', sort); p.set('maxPrice', maxPrice);
+      p.set('sort', sort);
+      if (maxPrice != null) p.set('maxPrice', maxPrice);
       if (search) p.set('search', search);
       if (filters.organic) p.set('organic', 'true');
       if (filters.flashSale) p.set('flashSale', 'true');
@@ -189,7 +200,6 @@ function ProductsContent() {
       const r = await fetch(`/api/products?${p}`);
       const d = await r.json();
       setProducts((d.products || []).map(p => ({ ...p, id: (p.id || p._id)?.toString() })));
-      console.log(products)
     } catch { setProducts([]); }
     setLoading(false);
   }, [category, type, sort, search, filters, maxPrice]);
@@ -203,8 +213,8 @@ function ProductsContent() {
     setFilters({ organic: sp.get('organic') === 'true', flashSale: sp.get('flashSale') === 'true', newArrival: sp.get('newArrival') === 'true' });
   }, [sp]);
 
-  const clearAll = () => { setCat('All'); setType(''); setSearch(''); setSearchInput(''); setFilters({ organic: false, flashSale: false, newArrival: false }); setMaxPrice(25); };
-  const activeCount = Object.values(filters).filter(Boolean).length + (category !== 'All' ? 1 : 0) + (type ? 1 : 0);
+  const clearAll = () => { setCat('All'); setType(''); setSearch(''); setSearchInput(''); setFilters({ organic: false, flashSale: false, newArrival: false }); setMaxPrice(null); };
+  const activeCount = Object.values(filters).filter(Boolean).length + (category !== 'All' ? 1 : 0) + (type ? 1 : 0) + (maxPrice != null ? 1 : 0);
 
   const activeTypeLabel = type ? types.find(t => t.slug === type)?.name : null;
 

@@ -8,7 +8,7 @@ import { Toaster } from 'react-hot-toast';
 
 export const metadata = {
   title: { default: 'FreshMart — Premium Organic Grocery', template: '%s | FreshMart' },
-  description: 'Shop the finest organic, locally sourced groceries. Free delivery over £50. Same-day delivery available.',
+  description: 'Shop the finest organic, locally sourced groceries. Free delivery over ৳50. Same-day delivery available.',
   keywords: ['organic grocery', 'fresh produce', 'online supermarket', 'sustainable food'],
   openGraph: { title: 'FreshMart', description: 'Premium organic groceries delivered.', type: 'website', siteName: 'FreshMart' },
   robots: { index: true, follow: true },

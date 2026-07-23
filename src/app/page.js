@@ -16,7 +16,7 @@ import { DEFAULT_HOME_SECTIONS } from '@/lib/defaultHomeSections';
 
 export const metadata = {
   title: 'FreshMart — Premium Organic Grocery Delivered',
-  description: 'Shop the finest organic produce, artisan foods & sustainably sourced groceries. Free delivery over £50. Same-day delivery available.',
+  description: 'Shop the finest organic produce, artisan foods & sustainably sourced groceries. Free delivery over ৳50. Same-day delivery available.',
 };
 
 async function getProducts() {

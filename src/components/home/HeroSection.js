@@ -20,7 +20,7 @@ const SLIDES = [
     title: 'Big Savings,\nBig Flavour',
     sub: 'Today\'s best deals on premium groceries. Limited stock — act fast!',
     cta: 'View Deals', href: '/products?flashSale=true',
-    stat: [{ n: '30%', l: 'Max Discount' }, { n: '8h', l: 'Remaining' }, { n: '£0', l: 'Delivery £50+' }],
+    stat: [{ n: '30%', l: 'Max Discount' }, { n: '8h', l: 'Remaining' }, { n: '৳0', l: 'Delivery ৳50+' }],
   },
   {
     image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=1600&q=85',
@@ -135,7 +135,7 @@ export default function HeroSection() {
       {/* Trust strip */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 3, background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
         <div className="container" style={{ height: 56, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 'clamp(1.25rem, 4vw, 3rem)', flexWrap: 'wrap' }}>
-          {[['🌿','Certified Organic'],['🚚','Free Delivery £50+'],['⭐','4.9 Rating'],['♻️','Carbon Neutral']].map(([e, t]) => (
+          {[['🌿','Certified Organic'],['🚚','Free Delivery ৳50+'],['⭐','4.9 Rating'],['♻️','Carbon Neutral']].map(([e, t]) => (
             <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'rgba(255,255,255,0.75)', fontSize: '0.8125rem', whiteSpace: 'nowrap' }}>
               <span style={{ fontSize: '1rem' }}>{e}</span> {t}
             </div>

@@ -82,8 +82,8 @@ export default function AdminProductsPage() {
                     </td>
                     <td style={{ color:'var(--slate)',fontSize:'0.875rem' }}>{p.category}</td>
                     <td>
-                      <p style={{ fontWeight:800,fontSize:'1rem' }}>£{p.price.toFixed(2)}</p>
-                      {p.originalPrice&&<p style={{ fontSize:'0.75rem',color:'var(--muted)',textDecoration:'line-through' }}>£{p.originalPrice.toFixed(2)}</p>}
+                      <p style={{ fontWeight:800,fontSize:'1rem' }}>৳{p.price.toFixed(2)}</p>
+                      {p.originalPrice&&<p style={{ fontSize:'0.75rem',color:'var(--muted)',textDecoration:'line-through' }}>৳{p.originalPrice.toFixed(2)}</p>}
                     </td>
                     <td>
                       <span style={{ fontWeight:700,fontSize:'0.9375rem',color:p.stock<10?'#e74c3c':p.stock<20?'#f59e0b':'var(--green)' }}>{p.stock}</span>
