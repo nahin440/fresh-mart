@@ -84,18 +84,17 @@ const ProductSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true },
 }, { timestamps: true });
 
-ProductSchema.pre('save', function(next) {
+ProductSchema.pre('save', function() {
   const types = Array.isArray(this.types) ? this.types : [];
   for (const [slug, flagField] of Object.entries(LEGACY_TYPE_SLUGS)) {
     this[flagField] = types.includes(slug);
   }
-  next();
 });
 
 // findByIdAndUpdate/findOneAndUpdate bypass document middleware by default,
 // so the same sync has to happen here too or admin edits made via PUT would
 // silently stop updating the legacy flags.
-ProductSchema.pre(['findOneAndUpdate'], function(next) {
+ProductSchema.pre(['findOneAndUpdate'], function() {
   const update = this.getUpdate() || {};
   const nextTypes = update.types ?? update.$set?.types;
   if (nextTypes !== undefined) {
@@ -107,7 +106,6 @@ ProductSchema.pre(['findOneAndUpdate'], function(next) {
     if (update.$set) Object.assign(update.$set, flags);
     else Object.assign(update, flags);
   }
-  next();
 });
 
 const OrderSchema = new mongoose.Schema({
@@ -135,11 +133,10 @@ const OrderSchema = new mongoose.Schema({
   notes: String,
 }, { timestamps: true });
 
-OrderSchema.pre('save', function(next) {
+OrderSchema.pre('save', function() {
   if (!this.orderNumber) {
     this.orderNumber = 'FM' + Date.now().toString().slice(-8);
   }
-  next();
 });
 
 export const Product = mongoose.models.Product || mongoose.model('Product', ProductSchema);
